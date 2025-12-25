@@ -1,112 +1,35 @@
-using System.Collections.Generic;
 using UnityEngine.Events;
 
 public class GlobalFlags
 {
-    public class Flag
+    // Шина событий
+    // Название глобальные флаги - единственное, что осталось от прошлой версии реализации
+    // То, как она была реализована до этого можно посмотреть в репозитории CourseWork2025
+
+    public UnityEvent<int> NextStepQuery { get; } = new(); // Запрос следующего шага
+    public UnityEvent<int, int> OnTurnStarted { get; } = new(); // Когда начинается ход
+    public UnityEvent<int, int> OnTurnEnded { get; } = new(); // Когда заканчивается ход
+    public UnityEvent AllowNextStep { get; } = new(); // Разрешение на следующий шаг
+
+    public void TriggerNextStepQuery(int stepId)
     {
-        public UnityEvent<bool> onFlagChange;
-        public FlagType flagType;
-        public bool State
-        {
-            get => state;
-            set
-            {
-                if (state != value)
-                {
-                    state = value;
-                    onFlagChange?.Invoke(state);
-                }
-            }
-        }
-
-        private bool state;
-
-        public Flag(FlagType flagType) : this(flagType, false) { }
-
-        public Flag(FlagType flagType, bool state)
-        {
-            this.flagType = flagType;
-            this.state = state;
-            onFlagChange = new UnityEvent<bool>();
-        }
+        NextStepQuery.Invoke(stepId);
     }
 
-    private HashSet<Flag> _activeFlags = new HashSet<Flag>();
-    
-    public void SetFlag(FlagType flag, bool newState = true)
+    public void TriggerOnTurnStarted(int turnId, int playerId)
     {
-        foreach (var activeFlag in _activeFlags)
-        {
-            if (activeFlag.flagType == flag)
-            {
-                activeFlag.State = newState;
-                return;
-            }
-        }
-
-        _activeFlags.Add(new Flag(flag, newState));
+        // playerId - ID игрока, чей ход начинается
+        OnTurnStarted.Invoke(turnId, playerId);
     }
 
-    public Flag GetFlag(FlagType flag)
+    public void TriggerOnTurnEnded(int turnId, int playerId)
     {
-        foreach (var activeFlag in _activeFlags)
-        {
-            if (activeFlag.flagType == flag)
-                return activeFlag;
-        }
-
-        return null;
+        // playerId - ID игрока, чей ход кончается
+        OnTurnEnded.Invoke(turnId, playerId);
     }
 
-    public void ToggleFlag(FlagType flag)
+    public void TriggerAllowNextStep()
     {
-        foreach (var activeFlag in _activeFlags)
-        {
-            if (activeFlag.flagType == flag)
-            {
-                activeFlag.State = !activeFlag.State;
-                return;
-            }
-        }
-
-        _activeFlags.Add(new Flag(flag, true));
+        AllowNextStep.Invoke();
     }
-
-    public void ResetAllFlags()
-    {
-        _activeFlags.Clear();
-    }
-
-    public IReadOnlyCollection<Flag> GetActiveFlags()
-    {
-        return _activeFlags;
-    }
-}
-
-public enum FlagType
-{
-    // General
-    PlayerCanMove,
-    GameStarted,
-    LevelCompleted,
-    InputLocked,
-    GameOver,
-    GameWin,
-
-    // Runner specific
-    RunnerStage1Passed,
-    RunnerStage2Passed,
-    RunnerStage3Passed,
-    RunnerIsRotating,
-    BlockPlayerMoving,
-    CarTurning,
-
-    // ShootEmUp
-    ShootEmUpWaveEnded,
-    ShootEmUpStartWave,
-    ShootEmUpEnemyDied,
-    
-    // BoxPuzzle
-    IsReadyToShowMiniCamera
 }
