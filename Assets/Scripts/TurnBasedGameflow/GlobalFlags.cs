@@ -10,7 +10,15 @@ public class GlobalFlags
     public UnityEvent<int, int> OnTurnStartedPrepared { get; } = new(); // ПЕРЕД тем, как начинается ход
     public UnityEvent<int, int> OnTurnStarted { get; } = new(); // Когда начинается ход
     public UnityEvent<int, int> OnTurnEnded { get; } = new(); // Когда заканчивается ход
-    public UnityEvent AllowNextStep { get; } = new(); // Разрешение на следующий шаг
+    public UnityEvent OnNextStepAllowed { get; } = new(); // Разрешение на следующий шаг
+    public UnityEvent OnFullCycleEnded { get; } = new(); // Прошли круг и вернулись к первому игроку
+
+    // Порядок вызова (важно!):
+    // OnTurnStartedPrepared        Подготовка к началу хода
+    // OnTurnStarted                Непосредственное начало хода - игрок может действовать
+    // OnTurnEnded                  Игрок сделал ход
+    // NextStepQuery                Запрашиваем следующий ход И проверяем условия победы/поражения
+    // OnNextStepAllowed            Разрешаем следующий ход
 
     public void TriggerNextStepQuery(int stepId)
     {
@@ -36,6 +44,11 @@ public class GlobalFlags
 
     public void TriggerAllowNextStep()
     {
-        AllowNextStep.Invoke();
+        OnNextStepAllowed.Invoke();
+    }
+
+    public void TriggerOnFullCycleEnded()
+    {
+        OnFullCycleEnded.Invoke();
     }
 }

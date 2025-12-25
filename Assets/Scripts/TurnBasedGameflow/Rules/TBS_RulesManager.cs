@@ -12,6 +12,8 @@ public class TBS_RulesManager : MonoBehaviour
     // - правила возможности действий
     // - правила победы или поражени€
     // - правила после конца хода
+    // - правила после каждого круга игроков
+    // - правила перед началом игры
 
     public static TBS_RulesManager Instance { get; private set; }
     private GlobalFlags _globalFlags;
@@ -34,6 +36,7 @@ public class TBS_RulesManager : MonoBehaviour
     public List<IRule> RulesToAllowActionCashed { get; private set; } = new();
     public List<IRule> RulesToWinOrDefeatCashed { get; private set; } = new();
     public List<IRule> RulesBeforeGameStartCashed { get; private set; } = new();
+    public List<IRule> RulesAfterCycleEndedCashed { get; private set; } = new();
 
     private event Action OnRulesChanged;
     public event Action OnCashedRulesRecalculated;
@@ -76,6 +79,7 @@ public class TBS_RulesManager : MonoBehaviour
     private void RecalculateCashedRules()
     {
         //  ешируем правила когда они помен€лись
+        //  ак на счЄт оптимизировать и не удал€ть всЄ, а просто добавл€ть и удал€ть по необходимости
 
         RulesBeforeTurnCashed.Clear();
         RulesAfterTurnCashed.Clear();
@@ -105,6 +109,9 @@ public class TBS_RulesManager : MonoBehaviour
                     break;
                 case RuleType.BeforeStartGame:
                     RulesBeforeGameStartCashed.Add(rule);
+                    break;
+                case RuleType.AfterEndOfCycle:
+                    RulesAfterCycleEndedCashed.Add(rule);
                     break;
             }
         }

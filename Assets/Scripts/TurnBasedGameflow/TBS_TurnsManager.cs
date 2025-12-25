@@ -19,6 +19,7 @@ public class TBS_TurnsManager : MonoBehaviour
     public void Init(GlobalFlags globalFlags)
     {
         _globalFlags = globalFlags;
+        _globalFlags.OnNextStepAllowed.AddListener(HandleEndOfTurn);
 
         _orderManager = TBS_OrderManager.Instance;
     }
@@ -37,7 +38,7 @@ public class TBS_TurnsManager : MonoBehaviour
         
     }
 
-    public void HandleNextPlayer()
+    public void HandleEndOfTurn()
     {
 
     }

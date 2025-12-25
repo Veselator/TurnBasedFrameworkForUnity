@@ -91,5 +91,6 @@ public enum RuleType
     ToCalculatePoints,
     ToWinOrDefeat,
     ToAllowAction,
-    BeforeStartGame
+    BeforeStartGame,
+    AfterEndOfCycle
 }
