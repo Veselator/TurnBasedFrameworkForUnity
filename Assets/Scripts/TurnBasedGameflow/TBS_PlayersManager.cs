@@ -9,6 +9,7 @@ public class TBS_PlayersManager : MonoBehaviour
     // Отвечает за хранение информации об игроках
 
     private List<IPlayer> players;
+    public IReadOnlyCollection<IPlayer> Players => players;
     public static TBS_PlayersManager Instance { get; private set; }
     private GlobalFlags _globalFlags;
     public int CurrentPlayerID { get; private set; }
@@ -26,7 +27,7 @@ public class TBS_PlayersManager : MonoBehaviour
 
         for (int i = 0; i < config.players.Length; i++)
         {
-            players.Add(PlayerFactory.CreatePlayer(config.players[i], i));
+            players.Add(PlayerFactory.CreatePlayer(config.players[i], i)); // TODO: переписать PlayerFactory через DI
         }
     }
 }
