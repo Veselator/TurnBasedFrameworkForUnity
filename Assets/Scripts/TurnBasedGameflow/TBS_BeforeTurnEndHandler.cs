@@ -7,4 +7,6 @@ public class TBS_BeforeTurnEndHandler : MonoBehaviour
     // Обработка правил перед концом хода
 
     // Правила RulesAfterTurnCashed и RulesToWinOrDefeatCashed
+
+
 }

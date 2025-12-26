@@ -6,4 +6,5 @@ public interface IRule
 {
     public string ID { get; set; }
     public RuleType ruleType { get; }
+    public IEnumerator ExecuteRule(int turnId, int playerId);
 }

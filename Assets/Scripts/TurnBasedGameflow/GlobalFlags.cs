@@ -6,19 +6,38 @@ public class GlobalFlags
     // Название глобальные флаги - единственное, что осталось от прошлой версии реализации
     // То, как она была реализована до этого можно посмотреть в репозитории CourseWork2025
 
+    // Turn based system события!!!!!!!!!!!!!
+
+    // Везде
+    // Первый int - номер хода
+    // Второй - ID игрока
+
     public UnityEvent<int> NextStepQuery { get; } = new(); // Запрос следующего шага
     public UnityEvent<int, int> OnTurnStartedPrepared { get; } = new(); // ПЕРЕД тем, как начинается ход
     public UnityEvent<int, int> OnTurnStarted { get; } = new(); // Когда начинается ход
     public UnityEvent<int, int> OnTurnEnded { get; } = new(); // Когда заканчивается ход
     public UnityEvent OnNextStepAllowed { get; } = new(); // Разрешение на следующий шаг
     public UnityEvent OnFullCycleEnded { get; } = new(); // Прошли круг и вернулись к первому игроку
+    public UnityEvent OnGameStarted { get; } = new(); // Игра началась
+    public UnityEvent OnGameEnded { get; } = new(); // Игра началась
 
     // Порядок вызова (важно!):
-    // OnTurnStartedPrepared        Подготовка к началу хода
-    // OnTurnStarted                Непосредственное начало хода - игрок может действовать
-    // OnTurnEnded                  Игрок сделал ход
-    // NextStepQuery                Запрашиваем следующий ход И проверяем условия победы/поражения
-    // OnNextStepAllowed            Разрешаем следующий ход
+
+    // OnGameStarted                Игра началась
+
+    // Каждый ход:
+    //      OnTurnStartedPrepared        Подготовка к началу хода
+    //      OnTurnStarted                Непосредственное начало хода - игрок может действовать
+    //      OnTurnEnded                  Игрок сделал ход
+    //      NextStepQuery                Запрашиваем следующий ход И проверяем условия победы/поражения
+    //      OnNextStepAllowed            Разрешаем следующий ход
+
+    // OnGameEnded
+
+    // Есть вопрос к необходимости этих событий
+    // Можно просто отслеживать через OnTurnStarted и OnTurnEnded
+    public UnityEvent OnPlayersTurnStarted { get; } = new(); // Ход игрока начался
+    public UnityEvent OnPlayersTurnEnded { get; } = new(); // Ход игрока закончился
 
     public void TriggerNextStepQuery(int stepId)
     {
@@ -50,5 +69,15 @@ public class GlobalFlags
     public void TriggerOnFullCycleEnded()
     {
         OnFullCycleEnded.Invoke();
+    }
+
+    public void TriggerOnGameStarted()
+    {
+        OnGameStarted.Invoke();
+    }
+
+    public void TriggerOnGameEnded()
+    {
+        OnGameEnded.Invoke();
     }
 }

@@ -20,9 +20,11 @@ public class TBS_InitManager : MonoBehaviour
     {
         _globalFlags = new GlobalFlags();
         TBS_PlayersManager.Instance.Init(_globalFlags, _initConfig);
-        TBS_OrderManager.Instance.Init();
+        TBS_OrderManager.Instance.Init(_globalFlags);
         TBS_RulesManager.Instance.Init(_globalFlags, _initConfig);
         TBS_BaseMap.Instance.Init();
+        TBS_BeforeTurnStartHandler.Instance.Init(_globalFlags);
+
         TBS_TurnsManager.Instance.Init(_globalFlags);
     }
 }

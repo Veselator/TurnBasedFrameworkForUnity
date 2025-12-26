@@ -7,13 +7,12 @@ public class TBS_PlayersManager : MonoBehaviour
 {
     // Менеджер игроков пошаговой системы
     // Отвечает за хранение информации об игроках
+    // НЕ ЗНАЕТ, КАКОЙ ТЕКУЩИЙ ИГРОК!
 
     private List<IPlayer> players;
     public IReadOnlyCollection<IPlayer> Players => players;
     public static TBS_PlayersManager Instance { get; private set; }
     private GlobalFlags _globalFlags;
-    public int CurrentPlayerID { get; private set; }
-    public IPlayer CurrentPlayer => players[CurrentPlayerID];
 
     private void Awake()
     {
@@ -29,5 +28,22 @@ public class TBS_PlayersManager : MonoBehaviour
         {
             players.Add(PlayerFactory.CreatePlayer(config.players[i], i)); // TODO: переписать PlayerFactory через DI
         }
+    }
+
+    public IPlayer GetPlayerByID(int id)
+    {
+        if(id < 0 || id >= players.Count) return null;
+        return players[id];
+    }
+
+    public int GetPlayersCount()
+    {
+        return players.Count;
+    }
+
+    public IPlayer GetNextPlayer(int id)
+    {
+        int nextId = (id + 1) % players.Count;
+        return players[nextId]; 
     }
 }

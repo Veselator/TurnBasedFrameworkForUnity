@@ -9,10 +9,11 @@ public class TBS_OrderManager : MonoBehaviour
     // Ќеобходим дл€ гибкости в выборе способа инициализации пор€дка хода
 
     public static TBS_OrderManager Instance { get; private set; }
-    public List<int> order; // ѕор€док ходов, хранит ID игроков в пор€дке их ходов
+    private GlobalFlags _globalFlags;
+    public List<int> Order { get; private set; } // ѕор€док ходов, хранит ID игроков в пор€дке их ходов
     private TBS_BaseOrderRule orderRule; // ѕравило формировани€ пор€дка ходов
-    public int CurrentTurnIndex { get; private set; } = 0; // »ндекс текущего хода в списке order
-    public int CurrentPlayerID => order[CurrentTurnIndex]; // ID игрока, который ходит сейчас
+    public int CurrentPlayerPointer { get; private set; } = 0; // »ндекс текущего игрока в списке order
+    public int CurrentPlayerID => Order[CurrentPlayerPointer]; // ID игрока, который ходит сейчас
 
     private void Awake()
     {
@@ -22,13 +23,20 @@ public class TBS_OrderManager : MonoBehaviour
         orderRule = GetComponent<TBS_BaseOrderRule>();
     }
 
-    public void Init()
+    public void Init(GlobalFlags globalFlags)
     {
-        order = orderRule.GetTurnOrder(TBS_PlayersManager.Instance.Players);
+        _globalFlags = globalFlags;
+        Order = orderRule.GetTurnOrder(TBS_PlayersManager.Instance.Players);
     }
 
     public void NextPlayer()
     {
-        CurrentTurnIndex = (CurrentTurnIndex + 1) % order.Count;
+        CurrentPlayerPointer += 1;
+
+        if (CurrentPlayerPointer >= Order.Count)
+        {
+            CurrentPlayerPointer = 0;
+            _globalFlags.TriggerOnFullCycleEnded();
+        }
     }
 }
