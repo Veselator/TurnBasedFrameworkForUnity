@@ -22,9 +22,9 @@ public class TBS_TurnsManager : MonoBehaviour
     public void Init(GlobalFlags globalFlags)
     {
         _globalFlags = globalFlags;
-        _globalFlags.OnNextStepAllowed.AddListener(OnNextStepAllowed);
+        _globalFlags.OnNextTurnAllowed.AddListener(OnNextTurnAllowed);
         _globalFlags.OnTurnEnded.AddListener(HandleEndOfTurn);
-        _globalFlags.OnTurnStarted.AddListener(OnStepStarted);
+        _globalFlags.OnTurnStarted.AddListener(OnTurnStarted);
 
         _orderManager = TBS_OrderManager.Instance;
         _players = TBS_PlayersManager.Instance;
@@ -35,9 +35,9 @@ public class TBS_TurnsManager : MonoBehaviour
         if (_globalFlags != null)
         {
             // Отписка
-            _globalFlags.OnNextStepAllowed.RemoveListener(OnNextStepAllowed);
+            _globalFlags.OnNextTurnAllowed.RemoveListener(OnNextTurnAllowed);
             _globalFlags.OnTurnEnded.RemoveListener(HandleEndOfTurn);
-            _globalFlags.OnTurnStarted.RemoveListener(OnStepStarted);
+            _globalFlags.OnTurnStarted.RemoveListener(OnTurnStarted);
         }
     }
 
@@ -45,16 +45,17 @@ public class TBS_TurnsManager : MonoBehaviour
     public void StartGame()
     {
         _globalFlags.TriggerOnGameStarted();
+        // Асинхронное начало хода? Надо подумать
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
     }
 
     public void HandleEndOfTurn(int turnId, int playerId)
     {
         _isNextTurnQueuedFlag = true;
-        _globalFlags.TriggerNextStepQuery(turnId); // Запрос на следующий ход
+        _globalFlags.TriggerNextTurnQuery(turnId, playerId); // Запрос на следующий ход
     }
 
-    public void OnNextStepAllowed()
+    public void OnNextTurnAllowed()
     {
         if (!_isNextTurnQueuedFlag) return;
         _isNextTurnQueuedFlag = false;
@@ -64,9 +65,11 @@ public class TBS_TurnsManager : MonoBehaviour
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
     }
 
-    public void OnStepStarted(int turnId, int playerId)
+    public void OnTurnStarted(int turnId, int playerId)
     {
         // Начало хода
-        _players.GetPlayerByID(playerId).Act();
+        IPlayer currentPlayer = _players.GetPlayerByID(playerId);
+        currentPlayer.Act();
+        if (!currentPlayer.IsAI) _globalFlags.TriggerOnHumansTurnStarted();
     }
 }

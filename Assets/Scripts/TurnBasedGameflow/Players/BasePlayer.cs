@@ -16,6 +16,12 @@ public abstract class BasePlayer : IPlayer
     public int Points => points;
     public virtual bool IsAI { get; }
 
+    public void Act()
+    {
+        // Заглушка
+        Debug.Log($"Player {Name} with ID {ID} is acting.");
+    }
+
     public BasePlayer() : this(0, "Player") { }
 
     public BasePlayer(int ID, string Name) : this(ID, Name, 0) { }

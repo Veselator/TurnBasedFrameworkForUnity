@@ -2,18 +2,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Основной конфиг ВСЕХ доступных правил в игре
 [CreateAssetMenu(fileName = "TBS_RulesConfigSO", menuName = "TurnBasedGameflow/TBS_RulesConfigSO")]
 public class TBS_RulesConfigSO : ScriptableObject
 {
-    // Конфигурация всех возможных правил
-
     [SerializeField]
     private List<RuleEntry> ruleEntries = new List<RuleEntry>();
 
-    // Словарь для быстрого доступа (создаётся при загрузке)
-    private Dictionary<string, RuleDefinition> _rulesCache;
+    private Dictionary<string, RuleSO> _rulesCache;
 
-    public Dictionary<string, RuleDefinition> Rules
+    public Dictionary<string, RuleSO> Rules
     {
         get
         {
@@ -32,32 +30,24 @@ public class TBS_RulesConfigSO : ScriptableObject
 
     private void BuildCache()
     {
-        _rulesCache = new Dictionary<string, RuleDefinition>();
+        _rulesCache = new Dictionary<string, RuleSO>();
         foreach (var entry in ruleEntries)
         {
-            if (!string.IsNullOrEmpty(entry.ruleID))
+            if (!string.IsNullOrEmpty(entry.ruleID) && entry.rule != null)
             {
-                if (_rulesCache.ContainsKey(entry.ruleID))
-                {
-                    Debug.LogWarning($"Duplicate ruleID found: {entry.ruleID}. Skipping.");
-                    continue;
-                }
-
-                _rulesCache[entry.ruleID] = entry.definition;
-                entry.definition.ruleInstance.ID = entry.ruleID;
+                _rulesCache[entry.ruleID] = entry.rule;
+                entry.rule.ID = entry.ruleID; // Важно что-бы id соотвествовал ключу
             }
         }
     }
 
-    // Вспомогательный метод для получения правила
-    public RuleDefinition GetRule(string ruleID)
+    public RuleSO GetRule(string ruleID)
     {
-        if (Rules.TryGetValue(ruleID, out RuleDefinition rule))
+        if (Rules.TryGetValue(ruleID, out RuleSO rule))
         {
             return rule;
         }
-
-        return default;
+        return null;
     }
 
     public bool HasRule(string ruleID)
@@ -70,27 +60,6 @@ public class TBS_RulesConfigSO : ScriptableObject
 public class RuleEntry
 {
     public string ruleID;
-    public RuleDefinition definition;
-}
-
-[Serializable]
-public struct RuleDefinition
-{
-    public RuleType ruleType;
-
-    [SerializeReference]
-    public IRule ruleInstance;
-
+    public RuleSO rule;
     public int priority;
-}
-
-public enum RuleType
-{
-    BeforeTurn,
-    AfterTurn,
-    ToCalculatePoints,
-    ToWinOrDefeat,
-    ToAllowAction,
-    BeforeStartGame,
-    AfterEndOfCycle
 }

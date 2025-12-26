@@ -12,14 +12,19 @@ public class GlobalFlags
     // Первый int - номер хода
     // Второй - ID игрока
 
-    public UnityEvent<int> NextStepQuery { get; } = new(); // Запрос следующего шага
-    public UnityEvent<int, int> OnTurnStartedPrepared { get; } = new(); // ПЕРЕД тем, как начинается ход
+    public UnityEvent<int, int> NextTurnQuery { get; } = new(); // Запрос следующего шага
+    public UnityEvent<int, int> OnTurnStartedPrepared { get; } = new(); // ПЕРЕД тем, как начинается ход; подготовка к нему
     public UnityEvent<int, int> OnTurnStarted { get; } = new(); // Когда начинается ход
     public UnityEvent<int, int> OnTurnEnded { get; } = new(); // Когда заканчивается ход
-    public UnityEvent OnNextStepAllowed { get; } = new(); // Разрешение на следующий шаг
+    // если игрок - то значит будет вызываться в интерфейсе, после нажатия кнопки условно
+    // если ИИ - то сразу после выполнения его действий
+
+    public UnityEvent OnNextTurnAllowed { get; } = new(); // Разрешение на следующий шаг
     public UnityEvent OnFullCycleEnded { get; } = new(); // Прошли круг и вернулись к первому игроку
     public UnityEvent OnGameStarted { get; } = new(); // Игра началась
-    public UnityEvent OnGameEnded { get; } = new(); // Игра началась
+
+    // int - id победившего игрока; -1 - ничья
+    public UnityEvent<int> OnGameEnded { get; } = new(); // Игра кончилась
 
     // Порядок вызова (важно!):
 
@@ -29,55 +34,66 @@ public class GlobalFlags
     //      OnTurnStartedPrepared        Подготовка к началу хода
     //      OnTurnStarted                Непосредственное начало хода - игрок может действовать
     //      OnTurnEnded                  Игрок сделал ход
-    //      NextStepQuery                Запрашиваем следующий ход И проверяем условия победы/поражения
-    //      OnNextStepAllowed            Разрешаем следующий ход
+    //      NextTurnQuery                Запрашиваем следующий ход И проверяем условия победы/поражения
+    //      OnNextTurnAllowed            Разрешаем следующий ход
 
     // OnGameEnded
 
     // Есть вопрос к необходимости этих событий
     // Можно просто отслеживать через OnTurnStarted и OnTurnEnded
-    public UnityEvent OnPlayersTurnStarted { get; } = new(); // Ход игрока начался
-    public UnityEvent OnPlayersTurnEnded { get; } = new(); // Ход игрока закончился
+    // Но так будет проще и оптимиизированнее - что-бы объекты отслеживали именно ход игрока, что важно для интерфейса
+    public UnityEvent OnHumansTurnStarted { get; } = new(); // Ход игрока начался
+    public UnityEvent OnHumansTurnEnded { get; } = new(); // Ход игрока закончился
 
-    public void TriggerNextStepQuery(int stepId)
+    public void TriggerNextTurnQuery(int stepId, int playerId)
     {
-        NextStepQuery.Invoke(stepId);
+        NextTurnQuery?.Invoke(stepId, playerId);
     }
 
     public void TriggerOnTurnStarted(int turnId, int playerId)
     {
         // playerId - ID игрока, чей ход начинается
-        OnTurnStarted.Invoke(turnId, playerId);
+        OnTurnStarted?.Invoke(turnId, playerId);
     }
     public void TriggerOnTurnStartedPrepared(int turnId, int playerId)
     {
         // playerId - ID игрока, чей ход начинается
-        OnTurnStartedPrepared.Invoke(turnId, playerId);
+        OnTurnStartedPrepared?.Invoke(turnId, playerId);
     }
 
     public void TriggerOnTurnEnded(int turnId, int playerId)
     {
         // playerId - ID игрока, чей ход кончается
-        OnTurnEnded.Invoke(turnId, playerId);
+        OnTurnEnded?.Invoke(turnId, playerId);
     }
 
-    public void TriggerAllowNextStep()
+    public void TriggerAllowNextTurn()
     {
-        OnNextStepAllowed.Invoke();
+        OnNextTurnAllowed?.Invoke();
     }
 
     public void TriggerOnFullCycleEnded()
     {
-        OnFullCycleEnded.Invoke();
+        OnFullCycleEnded?.Invoke();
     }
 
     public void TriggerOnGameStarted()
     {
-        OnGameStarted.Invoke();
+        OnGameStarted?.Invoke();
     }
 
-    public void TriggerOnGameEnded()
+    public void TriggerOnGameEnded(int playerWhoWonId)
     {
-        OnGameEnded.Invoke();
+        OnGameEnded?.Invoke(playerWhoWonId);
+    }
+
+    public void TriggerOnHumansTurnStarted()
+    {
+        OnHumansTurnStarted?.Invoke();
+    }
+
+    public void TriggerOnHumansTurnEnded()
+    {
+        OnHumansTurnEnded?.Invoke();
     }
 }

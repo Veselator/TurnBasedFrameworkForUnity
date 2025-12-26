@@ -70,7 +70,7 @@ public class TBS_RulesManager : MonoBehaviour
         foreach (var rule in currentRules.rules)
         {
             string ruleId = rule.linkedRuleID;
-            if (_rulesConfigSO.HasRule(ruleId)) _rules.Add(_rulesConfigSO.GetRule(ruleId).ruleInstance);
+            if (_rulesConfigSO.HasRule(ruleId)) _rules.Add(_rulesConfigSO.GetRule(ruleId));
         }
 
         RecalculateCashedRules();
@@ -119,7 +119,7 @@ public class TBS_RulesManager : MonoBehaviour
 
     public void AddRule(string ruleId)
     {
-        if (_rulesConfigSO.HasRule(ruleId)) Rules.Add(_rulesConfigSO.GetRule(ruleId).ruleInstance);
+        if (_rulesConfigSO.HasRule(ruleId)) Rules.Add(_rulesConfigSO.GetRule(ruleId));
     }
 
     public void RemoveRule(string ruleId)
