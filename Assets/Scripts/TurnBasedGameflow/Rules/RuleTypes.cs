@@ -20,10 +20,15 @@ public abstract class RuleBeforeGameStart : RuleSO
 
 public abstract class RuleToCalculatePoints : RuleSO
 {
-    // Пока не совсем понимаю как это будет работать
-    // TODO: ДОДЕЛАТЬ СИСТЕМУ
+    // В теории принцип работы таков:
+    // TBS_BeforeTurnEndHandler проходится по каждому правилу
+    // На вход передаёт список - карта
+    // Пропускаем список через все методы
+    // На выходе суммируем элементы списка - так и получаем число очков за действие
+
     public override RuleType ruleType => RuleType.ToCalculatePoints;
-    public abstract IEnumerator CalculatePoints(int turnId, int playerId, TBS_BaseMap newMapState);
+    public abstract IEnumerable CalculatePoints(int turnId, int playerId);
+    public abstract IEnumerable CalculatePoints(int turnId, int playerId, IEnumerable newMapState);
 }
 
 public abstract class RuleBeforeTurn : RuleSO
@@ -38,8 +43,10 @@ public abstract class RuleBeforeTurnEnd : RuleSO
 
 public abstract class RuleToAllowAction : RuleSO
 {
-    // TODO: Добавить параметры, которые будут влиять на разрешение действия; продумать логику использования, потому-что пока не совсем понятно
     public override RuleType ruleType => RuleType.ToAllowAction;
+    // TODO: что-то придумать
+    public abstract bool IsActionAllowed(params int[] parameters);
+    public abstract bool IsActionAllowed(IEnumerable parameters);
 }
 
 public abstract class RuleToWinOrDefeat : RuleSO

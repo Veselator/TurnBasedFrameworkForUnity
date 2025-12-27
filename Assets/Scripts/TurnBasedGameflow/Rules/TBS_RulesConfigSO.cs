@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "TBS_RulesConfigSO", menuName = "TurnBasedGameflow/TBS_RulesConfigSO")]
 public class TBS_RulesConfigSO : ScriptableObject
 {
+    // Конфиг всех доступных правил 
     [SerializeField]
     private List<RuleEntry> ruleEntries = new List<RuleEntry>();
 

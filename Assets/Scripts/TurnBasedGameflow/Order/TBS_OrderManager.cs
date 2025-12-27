@@ -18,14 +18,15 @@ public class TBS_OrderManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        // DI через инспектор
-        // ћогут быть разные правила формировани€ пор€дка хода
-        orderRule = TBS_BaseOrderRule.Instance;
     }
 
-    public void Init(GlobalFlags globalFlags)
+    public void Init(GlobalFlags globalFlags, TBS_InitConfigSO config)
     {
         _globalFlags = globalFlags;
+
+        // DI через синглтон
+        // ћогут быть разные правила формировани€ пор€дка хода
+        orderRule = config.orderRule;
         Order = orderRule.GetTurnOrder(TBS_PlayersManager.Instance.Players);
     }
 

@@ -27,7 +27,7 @@ public class TBS_PlayersManager : MonoBehaviour
 
         for (int i = 0; i < config.players.Length; i++)
         {
-            _players.Add(PlayerFactory.CreatePlayer(config.players[i], i)); // TODO: переписать PlayerFactory через DI
+            _players.Add(TBS_BasePlayerFactory.Instance.CreatePlayer(config.players[i], i)); // TODO: переписать PlayerFactory через DI
         }
     }
 

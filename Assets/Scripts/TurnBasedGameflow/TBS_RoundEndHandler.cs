@@ -32,7 +32,7 @@ public class TBS_RoundEndHandler : MonoBehaviour
 
     private void HandleRoundEnd(int roundResult)
     {
-        // TODO: перезагрузка данных, проверка правил
+        // TODO: перезагрузка данных, проверка правил AfterRound
         _globalFlags.TriggerNextRoundAllowed();
     }
 }
