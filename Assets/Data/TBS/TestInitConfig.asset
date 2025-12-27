@@ -19,6 +19,7 @@ MonoBehaviour:
     isAI: 1
   currentRulesConfig: {fileID: 11400000, guid: 85e5d009ceb63c645a0a72b270266afa, type: 2}
   rulesConfig: {fileID: 11400000, guid: fc413ffb895acd94c8c4beefa850f322, type: 2}
+  orderRule: {fileID: 11400000, guid: 137d146ac36552344bb8f60fcba696f2, type: 2}
   areTurnsInfinite: 1
   maxTurnsCount: 0
   maxRoundsCount: 3
