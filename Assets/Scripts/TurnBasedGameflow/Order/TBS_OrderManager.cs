@@ -20,7 +20,7 @@ public class TBS_OrderManager : MonoBehaviour
         Instance = this;
         // DI через инспектор
         // Могут быть разные правила формирования порядка хода
-        orderRule = GetComponent<TBS_BaseOrderRule>();
+        orderRule = TBS_BaseOrderRule.Instance;
     }
 
     public void Init(GlobalFlags globalFlags)
@@ -38,5 +38,11 @@ public class TBS_OrderManager : MonoBehaviour
             CurrentPlayerPointer = 0;
             _globalFlags.TriggerOnFullCycleEnded();
         }
+    }
+
+    public bool IsTurnEndsCycle(int turnId)
+    {
+        // Определяет, заканчивается ли круг этим ходом
+        return turnId % Order.Count == Order.Count - 1;
     }
 }

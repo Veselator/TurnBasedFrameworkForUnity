@@ -17,6 +17,8 @@ public class TBS_InitManager : MonoBehaviour
     {
         // Глобальные флаги - обязательно
         _globalFlags = new GlobalFlags();
+        
+        // Отлов ошибок, когда нужного компонента нет!
 
         // Инициализируем игроков
         TBS_PlayersManager.Instance.Init(_globalFlags, _initConfig);
@@ -26,12 +28,13 @@ public class TBS_InitManager : MonoBehaviour
         TBS_RulesManager.Instance.Init(_globalFlags, _initConfig);
         // Инициализируем карту
         TBS_BaseMap.Instance.Init();
-        // Дальше Handlers - держатель до начала и после конца
+        // Дальше Handlers - держатель до начала и после конца хода; после конца раунда
         TBS_BeforeTurnStartHandler.Instance.Init(_globalFlags);
         TBS_BeforeTurnEndHandler.Instance.Init(_globalFlags);
+        TBS_RoundEndHandler.Instance.Init(_globalFlags);
 
         // Инициализируем менеджер ходов
-        TBS_TurnsManager.Instance.Init(_globalFlags);
+        TBS_TurnsManager.Instance.Init(_globalFlags, _initConfig);
 
         // Начали!
         TBS_TurnsManager.Instance.StartGame();

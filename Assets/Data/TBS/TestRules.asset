@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4bf2a403cb42404f852fff97a216c36, type: 3}
   m_Name: TestRules
   m_EditorClassIdentifier: 
-  ruleEntries: []
-  references:
-    version: 2
-    RefIds: []
+  ruleEntries:
+  - ruleID: 
+    rule: {fileID: 0}
+    priority: 0

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine.Events;
 
 public class GlobalFlags
@@ -23,13 +24,22 @@ public class GlobalFlags
     public UnityEvent OnFullCycleEnded { get; } = new(); // Прошли круг и вернулись к первому игроку
     public UnityEvent OnGameStarted { get; } = new(); // Игра началась
 
+    // int - id ТЕКУЩЕГО раунда
+    public UnityEvent<int> OnRoundStarted { get; } = new(); // Раунд начался
+    // Но тут int - id победившего игрока или -1
+    public UnityEvent<int> OnRoundEnded { get; } = new(); // Раунд закончился
+
+    public UnityEvent<int> NextRoundQuery { get; } = new(); // Запрос на следующий раунд
+    public UnityEvent NextRoundAllowed { get; } = new(); // Запрос на следующий раунд
+
     // int - id победившего игрока; -1 - ничья
-    public UnityEvent<int> OnGameEnded { get; } = new(); // Игра кончилась
+    public UnityEvent<List<IPlayer>> OnGameEnded { get; } = new(); // Игра кончилась
 
     // Порядок вызова (важно!):
 
     // OnGameStarted                Игра началась
 
+    // OnRoundStarted               Раунд начался (НЕ КРУГ)
     // Каждый ход:
     //      OnTurnStartedPrepared        Подготовка к началу хода
     //      OnTurnStarted                Непосредственное начало хода - игрок может действовать
@@ -37,13 +47,15 @@ public class GlobalFlags
     //      NextTurnQuery                Запрашиваем следующий ход И проверяем условия победы/поражения
     //      OnNextTurnAllowed            Разрешаем следующий ход
 
+    // OnRoundEnded                      Раунд (НЕ КРУГ!!!!) окончен - есть победитель либо ничья
+
     // OnGameEnded
 
     // Есть вопрос к необходимости этих событий
     // Можно просто отслеживать через OnTurnStarted и OnTurnEnded
     // Но так будет проще и оптимиизированнее - что-бы объекты отслеживали именно ход игрока, что важно для интерфейса
-    public UnityEvent OnHumansTurnStarted { get; } = new(); // Ход игрока начался
-    public UnityEvent OnHumansTurnEnded { get; } = new(); // Ход игрока закончился
+    public UnityEvent<int> OnHumansTurnStarted { get; } = new(); // Ход игрока начался
+    public UnityEvent<int> OnHumansTurnEnded { get; } = new(); // Ход игрока закончился
 
     public void TriggerNextTurnQuery(int stepId, int playerId)
     {
@@ -82,18 +94,38 @@ public class GlobalFlags
         OnGameStarted?.Invoke();
     }
 
-    public void TriggerOnGameEnded(int playerWhoWonId)
+    public void TriggerOnRoundStarted(int roundId)
     {
-        OnGameEnded?.Invoke(playerWhoWonId);
+        OnRoundStarted?.Invoke(roundId);
     }
 
-    public void TriggerOnHumansTurnStarted()
+    public void TriggerOnRoundEnded(int playerWhoWonId)
     {
-        OnHumansTurnStarted?.Invoke();
+        OnRoundEnded?.Invoke(playerWhoWonId);
     }
 
-    public void TriggerOnHumansTurnEnded()
+    public void TriggerOnGameEnded(List<IPlayer> players)
     {
-        OnHumansTurnEnded?.Invoke();
+        OnGameEnded?.Invoke(players);
+    }
+
+    public void TriggerOnHumansTurnStarted(int playerId)
+    {
+        OnHumansTurnStarted?.Invoke(playerId);
+    }
+
+    public void TriggerOnHumansTurnEnded(int playerId)
+    {
+        OnHumansTurnEnded?.Invoke(playerId);
+    }
+
+    public void TriggerNextRoundQuery(int roundId)
+    {
+        NextRoundQuery?.Invoke(roundId);
+    }
+
+    public void TriggerNextRoundAllowed()
+    {
+        NextRoundAllowed?.Invoke();
     }
 }

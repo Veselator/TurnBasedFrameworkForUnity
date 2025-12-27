@@ -13,7 +13,8 @@ public abstract class BasePlayer : IPlayer
     public int ID => id;
 
     protected int points;
-    public int Points => points;
+    public int Points { get => points; set => points = value; }
+    public int OverallScore { get; set; }
     public virtual bool IsAI { get; }
 
     public void Act()

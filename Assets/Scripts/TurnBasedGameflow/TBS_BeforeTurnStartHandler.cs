@@ -35,7 +35,7 @@ public class TBS_BeforeTurnStartHandler : MonoBehaviour
 
     public void HandleBeforeTurnStart(int turnId, int playerId)
     {
-        List<IRule> rules = _rulesManager.RulesBeforeTurnCashed;
+        List<RuleBeforeTurn> rules = _rulesManager.RulesBeforeTurnCashed;
         if (rules.Count == 0)
         {
             // Правил нет - и нет смысла что-то обрабатывать
@@ -47,7 +47,7 @@ public class TBS_BeforeTurnStartHandler : MonoBehaviour
     }
 
     // Асинхронное выполнение правил перед началом хода
-    private IEnumerator ProcessBeforeTurnStartRules(int turnId, int playerId, List<IRule> rules)
+    private IEnumerator ProcessBeforeTurnStartRules(int turnId, int playerId, List<RuleBeforeTurn> rules)
     {
         foreach (IRule rule in rules)
         {

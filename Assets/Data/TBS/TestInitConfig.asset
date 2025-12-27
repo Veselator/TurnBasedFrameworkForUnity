@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc3e0be7ac19d3744b1ccb6d24a5d55b, type: 3}
   m_Name: TestInitConfig
   m_EditorClassIdentifier: 
-  players: []
-  currentRulesConfig: {fileID: 0}
-  rulesConfig: {fileID: 0}
+  players:
+  - playerName: Borys
+    isAI: 0
+  - playerName: Alex
+    isAI: 1
+  currentRulesConfig: {fileID: 11400000, guid: 85e5d009ceb63c645a0a72b270266afa, type: 2}
+  rulesConfig: {fileID: 11400000, guid: fc413ffb895acd94c8c4beefa850f322, type: 2}
+  areTurnsInfinite: 1
+  maxTurnsCount: 0
+  maxRoundsCount: 3

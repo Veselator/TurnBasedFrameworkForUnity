@@ -14,17 +14,36 @@ public class TBS_TurnsManager : MonoBehaviour
     private int _currentTurn = 0;
     public int CurrentTurn => _currentTurn;
 
+    private bool _areInfinityTurns;
+    private int _maxTurns;
+
+    // Можна было бы сделать отдельный менеджер раундов
+    // Так как получается, что немного нарушается SRP
+    // Но как-будто overengineering для данной задачи
+    private int _currentRound = 0;
+    public int CurrentRound => _currentRound;
+    private int _maxRounds;
+    public int MaxRounds => _maxRounds;
+    private bool _isNextRoundQueuedFlag = false;
+
     private void Awake()
     {
         Instance = this;
     }
 
-    public void Init(GlobalFlags globalFlags)
+    public void Init(GlobalFlags globalFlags, TBS_InitConfigSO config)
     {
         _globalFlags = globalFlags;
+
+        _areInfinityTurns = config.areTurnsInfinite;
+        _maxTurns = config.maxTurnsCount;
+        _maxRounds = config.maxRoundsCount;
+
         _globalFlags.OnNextTurnAllowed.AddListener(OnNextTurnAllowed);
         _globalFlags.OnTurnEnded.AddListener(HandleEndOfTurn);
         _globalFlags.OnTurnStarted.AddListener(OnTurnStarted);
+        _globalFlags.OnRoundEnded.AddListener(OnRoundEnded);
+        _globalFlags.NextRoundAllowed.AddListener(OnNextRoundAllowed);
 
         _orderManager = TBS_OrderManager.Instance;
         _players = TBS_PlayersManager.Instance;
@@ -38,6 +57,8 @@ public class TBS_TurnsManager : MonoBehaviour
             _globalFlags.OnNextTurnAllowed.RemoveListener(OnNextTurnAllowed);
             _globalFlags.OnTurnEnded.RemoveListener(HandleEndOfTurn);
             _globalFlags.OnTurnStarted.RemoveListener(OnTurnStarted);
+            _globalFlags.OnRoundEnded.RemoveListener(OnRoundEnded);
+            _globalFlags.NextRoundAllowed.RemoveListener(OnNextRoundAllowed);
         }
     }
 
@@ -52,6 +73,7 @@ public class TBS_TurnsManager : MonoBehaviour
     public void HandleEndOfTurn(int turnId, int playerId)
     {
         _isNextTurnQueuedFlag = true;
+        if (!_players.IsPlayerAi(playerId)) _globalFlags.TriggerOnHumansTurnEnded(playerId);
         _globalFlags.TriggerNextTurnQuery(turnId, playerId); // Запрос на следующий ход
     }
 
@@ -59,6 +81,20 @@ public class TBS_TurnsManager : MonoBehaviour
     {
         if (!_isNextTurnQueuedFlag) return;
         _isNextTurnQueuedFlag = false;
+
+        if (!_areInfinityTurns)
+        {
+            if(_currentTurn >= _maxTurns)
+            {
+                // Раунд закончился
+                // НО
+                // Если мы дошли до этого этапа - значит, победителя нет
+                // Значит ничья
+                _globalFlags.TriggerOnRoundEnded(-1);
+                return;
+            }
+        }
+
         _currentTurn++;
         _orderManager.NextPlayer();
 
@@ -70,6 +106,33 @@ public class TBS_TurnsManager : MonoBehaviour
         // Начало хода
         IPlayer currentPlayer = _players.GetPlayerByID(playerId);
         currentPlayer.Act();
-        if (!currentPlayer.IsAI) _globalFlags.TriggerOnHumansTurnStarted();
+        if (!currentPlayer.IsAI) _globalFlags.TriggerOnHumansTurnStarted(playerId);
+    }
+
+    // Нарушение SRP? Возможно
+    public void OnRoundEnded(int playerId)
+    {
+        // playerId = -1 - ничья
+        if (playerId >= 0) _players.AddOverallScoreToPlayerWithId(playerId, 1);
+
+        _currentRound++;
+        if (_currentRound >= _maxRounds)
+        {
+            // Всё, игра закончилась
+            _globalFlags.TriggerOnGameEnded(_players.GetPlayersOut());
+            return;
+        }
+
+        // Запрос для начала нового раунда
+        _isNextRoundQueuedFlag = true;
+        _globalFlags.TriggerNextRoundQuery(_currentRound);
+    }
+
+    public void OnNextRoundAllowed()
+    {
+        if (!_isNextRoundQueuedFlag) return;
+        _isNextRoundQueuedFlag = false;
+
+        _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
     }
 }

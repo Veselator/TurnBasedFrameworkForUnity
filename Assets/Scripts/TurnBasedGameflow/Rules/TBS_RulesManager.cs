@@ -30,13 +30,14 @@ public class TBS_RulesManager : MonoBehaviour
     }
 
     // Кешируем значения правил по категориям
-    public List<IRule> RulesBeforeTurnCashed { get; private set; } = new();
-    public List<IRule> RulesAfterTurnCashed { get; private set; } = new();
-    public List<IRule> RulesToCalculatePointsCashed { get; private set; } = new();
-    public List<IRule> RulesToAllowActionCashed { get; private set; } = new();
-    public List<IRule> RulesToWinOrDefeatCashed { get; private set; } = new();
-    public List<IRule> RulesBeforeGameStartCashed { get; private set; } = new();
-    public List<IRule> RulesAfterCycleEndedCashed { get; private set; } = new();
+    public List<RuleBeforeTurn> RulesBeforeTurnCashed { get; private set; } = new();
+    public List<RuleBeforeTurnEnd> RulesAfterTurnCashed { get; private set; } = new();
+    public List<RuleToCalculatePoints> RulesToCalculatePointsCashed { get; private set; } = new();
+    public List<RuleToAllowAction> RulesToAllowActionCashed { get; private set; } = new();
+    public List<RuleToWinOrDefeat> RulesToWinOrDefeatCashed { get; private set; } = new();
+    public List<RuleBeforeGameStart> RulesBeforeGameStartCashed { get; private set; } = new();
+    public List<RuleAfterCycleEnd> RulesAfterCycleEndedCashed { get; private set; } = new();
+    public List<RuleAfterEndOfRound> RulesAfterEndOfRoundCashed { get; private set; } = new();
 
     private event Action OnRulesChanged;
     public event Action OnCashedRulesRecalculated;
@@ -87,31 +88,36 @@ public class TBS_RulesManager : MonoBehaviour
         RulesToAllowActionCashed.Clear();
         RulesToWinOrDefeatCashed.Clear();
         RulesBeforeGameStartCashed.Clear();
+        RulesAfterCycleEndedCashed.Clear();
+        RulesAfterEndOfRoundCashed.Clear();
 
         foreach (var rule in Rules)
         {
             switch (rule.ruleType)
             {
                 case RuleType.BeforeTurn:
-                    RulesBeforeTurnCashed.Add(rule);
+                    RulesBeforeTurnCashed.Add(rule as RuleBeforeTurn);
                     break;
-                case RuleType.AfterTurn:
-                    RulesAfterTurnCashed.Add(rule);
+                case RuleType.BeforeTurnEnd:
+                    RulesAfterTurnCashed.Add(rule as RuleBeforeTurnEnd);
                     break;
                 case RuleType.ToCalculatePoints:
-                    RulesToCalculatePointsCashed.Add(rule);
+                    RulesToCalculatePointsCashed.Add(rule as RuleToCalculatePoints);
                     break;
                 case RuleType.ToAllowAction:
-                    RulesToAllowActionCashed.Add(rule);
+                    RulesToAllowActionCashed.Add(rule as RuleToAllowAction);
                     break;
                 case RuleType.ToWinOrDefeat:
-                    RulesToWinOrDefeatCashed.Add(rule);
+                    RulesToWinOrDefeatCashed.Add(rule as RuleToWinOrDefeat);
                     break;
                 case RuleType.BeforeStartGame:
-                    RulesBeforeGameStartCashed.Add(rule);
+                    RulesBeforeGameStartCashed.Add(rule as RuleBeforeGameStart);
                     break;
                 case RuleType.AfterEndOfCycle:
-                    RulesAfterCycleEndedCashed.Add(rule);
+                    RulesAfterCycleEndedCashed.Add(rule as RuleAfterCycleEnd);
+                    break;
+                case RuleType.AfterEndOfRound:
+                    RulesAfterEndOfRoundCashed.Add(rule as RuleAfterEndOfRound);
                     break;
             }
         }
