@@ -1,16 +1,38 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class BingoMap : TBS_BaseMap
 {
     // Модель данных карты демки - Бинго
-    private PieceColumn[] _map; // !
-    public override IEnumerable Map => throw new System.NotImplementedException();
+    private PieceColumn[] _map;
+    private int _maxHeight;
+    private int _width;
+    public override IEnumerable Map => GetMap();
+
+    public event Action OnElementAdded;
+    public event Action OnMapCreated;
+    public event Action OnMapReset;
 
     public override void Init(TBS_InitConfigSO config)
     {
-        _map = new PieceColumn[4];
+        BingoInitConfig bingoConfig = config as BingoInitConfig;
+
+        _maxHeight = bingoConfig.mapHeight;
+        _width = bingoConfig.mapWidth;
+
+        CreateMap();
+    }
+
+    private void CreateMap()
+    {
+        _map = new PieceColumn[_width];
+        for (int i = 0; i < _width; i++)
+        {
+            _map[i] = new PieceColumn(_maxHeight);
+        }
+
+        OnMapCreated?.Invoke();
     }
 
     public override void Reload()
@@ -19,70 +41,151 @@ public class BingoMap : TBS_BaseMap
         {
             q.Clear();
         }
+
+        OnMapReset?.Invoke();
     }
 
-    public void AddPiece(Piece piece, int lineId)
+    public void AddPiece(Piece piece, int columnId)
     {
-
+        if (columnId < 0 || columnId >= _map.Length) return;
+        if (_map[columnId].AddElement(piece)) OnElementAdded?.Invoke();
     }
 
-    public Piece[][] GetMap(int dgdg)
+    public Piece[][] GetMap()
     {
-        return new Piece[dgdg][];
+        // На выходе должно условно такая матрица
+
+        // [4] = 
+        // [3] =    P
+        // [2] = P  P 
+        // [1] = PP P
+        // [0] = PP P
+        //       0123
+
+        // Где P - Piece
+
+        Piece[][] outMap = new Piece[_maxHeight][];
+
+        for (int y = 0; y < _maxHeight; y++)
+        {
+            // Проходимся по каждому столбцу
+            // i - номер столбца
+            Piece[] newLine = new Piece[_width];
+
+            for (int x = 0; x < _width; x++)
+            {
+                newLine[x] = _map[x][y];
+            }
+
+            outMap[y] = newLine;
+        }
+
+        // Пример как надо проходиться по массиву для получения правильного порядка
+        // Хотя для, скажем, расчёта победной комбинации порядок обхода не влияет на результат
+        //Piece[][] mapMatrix = map.Map as Piece[][];
+
+        //for (int y = mapMatrix.Length - 1; y >= 0; y--)
+        //{
+        //    foreach (Piece piece in mapMatrix[y])
+        //    {
+        //        Console.Write(piece.playerId + 1 + " ");
+        //    }
+
+        //    Console.WriteLine();
+        //}
+
+        return outMap;
     }
 }
 
 public class PieceColumn
 {
-    private Queue<Piece> column;
+    // Модель данных столбца
+    // Реализует ограничение по высоте
 
-    public Piece this[int id]
-    {
-        get => GetElement(id);
-    }
+    private Queue<Piece> _column;
+    private Piece[] _columnArrayCashed;
+    private int _maxHeight;
+    private const int _defaultHeight = 6;
 
-    public PieceColumn()
-    {
-        column = new Queue<Piece>();
-    }
+    public Piece this[int id] => GetElement(id);
 
-    public PieceColumn(Queue<Piece> column)
+    public PieceColumn() : this(new Queue<Piece>(), _defaultHeight) { }
+
+    public PieceColumn(int height) : this(new Queue<Piece>(), height) { }
+
+    public PieceColumn(Queue<Piece> column) : this(column, _defaultHeight) { }
+
+    public PieceColumn(Queue<Piece> c, int height)
     {
-        this.column = column;
+        _column = c;
+        _maxHeight = height;
+        _columnArrayCashed = c.ToArray();
     }
 
     public Piece GetElement(int id)
     {
-        if (id < 0 || id >= column.Count) return null;
-        return column.ToArray()[id];
+        if (id < 0 || id >= _column.Count) return new Piece();
+        return _columnArrayCashed[id];
     }
 
     public Piece[] GetArray()
     {
-        return column.ToArray();
+        return _columnArrayCashed;
     }
 
     public void Clear()
     {
-        column.Clear();
+        _column.Clear();
     }
 
-    public void AddElement(Piece piece)
+    public bool AddElement(Piece piece)
     {
-        column.Enqueue(piece);
+        if (_column.Count < _maxHeight)
+        {
+            _column.Enqueue(piece);
+            _columnArrayCashed = _column.ToArray();
+            return true;
+        }
+        return false;
     }
 }
 
 public class Piece
 {
-    public int playerId = 0;
+    // Модель данных отдельного кусочка
+    public int playerId;
 
     public Piece()
     {
-        playerId = 0;
+        playerId = -1;
     }
+
     public Piece(int playerId)
     {
         this.playerId = playerId;
+    }
+
+    public static bool operator ==(Piece first, Piece another)
+    {
+        return first.Equals(another);
+    }
+
+    public static bool operator !=(Piece first, Piece another)
+    {
+        return first.Equals(another);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
+        Piece another = obj as Piece;
+        if (another == null) return false;
+        return playerId == another.playerId;
+    }
+
+    public override int GetHashCode()
+    {
+        return playerId.GetHashCode();
     }
 }

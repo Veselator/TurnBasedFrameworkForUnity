@@ -1,18 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BingoInitConfig : MonoBehaviour
+[CreateAssetMenu(fileName = "Bingo config", menuName = "Demo Bingo/Bingo config")]
+public class BingoInitConfig : TBS_InitConfigSO
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int mapWidth;
+    public int mapHeight;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Как вариант, добавить информацию о внешнем виде фишек для гибкой настройки
 }
