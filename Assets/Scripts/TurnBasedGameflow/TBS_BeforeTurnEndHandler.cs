@@ -50,6 +50,9 @@ public class TBS_BeforeTurnEndHandler : MonoBehaviour
         var rulesOfWinOrLose = _rulesManager.RulesToWinOrDefeatCashed;
         var rulesAfterCycle = _rulesManager.RulesAfterCycleEndedCashed;
 
+        //  ак вариант, перенести выполнение правил в сам TBS_RulesManager?
+        // Ќадо будет подумать
+
         // ѕровер€ем, есть ли правила перед концом хода
         if (rulesBeforeEnd.Count != 0)
         {

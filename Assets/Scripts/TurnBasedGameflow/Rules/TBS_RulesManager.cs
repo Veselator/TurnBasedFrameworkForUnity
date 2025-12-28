@@ -80,7 +80,7 @@ public class TBS_RulesManager : MonoBehaviour
     private void RecalculateCashedRules()
     {
         // Кешируем правила когда они поменялись
-        // Как на счёт оптимизировать и не удалять всё, а просто добавлять и удалять по необходимости
+        // Можно оптимизировать и не удалять всё, а просто добавлять и удалять по необходимости
 
         RulesBeforeTurnCashed.Clear();
         RulesAfterTurnCashed.Clear();

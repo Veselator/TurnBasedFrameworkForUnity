@@ -66,18 +66,21 @@ public class TBS_TurnsManager : MonoBehaviour
     public void StartGame()
     {
         _globalFlags.TriggerOnGameStarted();
+        _globalFlags.TriggerOnRoundStarted(_currentRound);
         // Асинхронное начало хода? Надо подумать
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
     }
 
-    public void HandleEndOfTurn(int turnId, int playerId)
+    // Дальше - обработчики событий
+
+    private void HandleEndOfTurn(int turnId, int playerId)
     {
         _isNextTurnQueuedFlag = true;
         if (!_players.IsPlayerAi(playerId)) _globalFlags.TriggerOnHumansTurnEnded(playerId);
         _globalFlags.TriggerNextTurnQuery(turnId, playerId); // Запрос на следующий ход
     }
 
-    public void OnNextTurnAllowed()
+    private void OnNextTurnAllowed()
     {
         if (!_isNextTurnQueuedFlag) return;
         _isNextTurnQueuedFlag = false;
@@ -101,7 +104,7 @@ public class TBS_TurnsManager : MonoBehaviour
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
     }
 
-    public void OnTurnStarted(int turnId, int playerId)
+    private void OnTurnStarted(int turnId, int playerId)
     {
         // Начало хода
         IPlayer currentPlayer = _players.GetPlayerByID(playerId);
@@ -110,7 +113,7 @@ public class TBS_TurnsManager : MonoBehaviour
     }
 
     // Нарушение SRP? Возможно
-    public void OnRoundEnded(int playerId)
+    private void OnRoundEnded(int playerId)
     {
         // playerId = -1 - ничья
         if (playerId >= 0) _players.AddOverallScoreToPlayerWithId(playerId, 1);
@@ -128,11 +131,12 @@ public class TBS_TurnsManager : MonoBehaviour
         _globalFlags.TriggerNextRoundQuery(_currentRound);
     }
 
-    public void OnNextRoundAllowed()
+    private void OnNextRoundAllowed()
     {
         if (!_isNextRoundQueuedFlag) return;
         _isNextRoundQueuedFlag = false;
 
+        _globalFlags.TriggerOnRoundStarted(_currentRound);
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
     }
 }

@@ -56,7 +56,7 @@ public class TBS_InitManager : MonoBehaviour
         // Инициализируем карту
         if (TBS_BaseMap.Instance != null)
         {
-            TBS_BaseMap.Instance.Init();
+            TBS_BaseMap.Instance.Init(_initConfig);
         }
         else
         {

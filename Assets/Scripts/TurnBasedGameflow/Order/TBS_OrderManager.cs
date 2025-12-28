@@ -46,4 +46,9 @@ public class TBS_OrderManager : MonoBehaviour
         // Определяет, заканчивается ли круг этим ходом
         return turnId % Order.Count == Order.Count - 1;
     }
+
+    public void Reload()
+    {
+        CurrentPlayerPointer = 0;
+    }
 }

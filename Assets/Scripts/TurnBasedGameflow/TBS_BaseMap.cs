@@ -1,10 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class TBS_BaseMap : MonoBehaviour
 {
     // Базовый класс карты пошаговой системы
+    // Хранит информацию о текущем состоянии карты
+
     public static TBS_BaseMap Instance { get; private set; }
     public abstract IEnumerable Map { get; }
 
@@ -13,8 +14,6 @@ public abstract class TBS_BaseMap : MonoBehaviour
         Instance = this;
     }
 
-    public void Init()
-    {
-        
-    }
+    public abstract void Init(TBS_InitConfigSO config);
+    public abstract void Reload();
 }
