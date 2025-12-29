@@ -12,4 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4bf2a403cb42404f852fff97a216c36, type: 3}
   m_Name: BingoRules
   m_EditorClassIdentifier: 
-  ruleEntries: []
+  ruleEntries:
+  - ruleID: bingo_win_diag
+    rule: {fileID: 11400000, guid: 8fedef9365777394e967b01920eb9d82, type: 2}
+    priority: 0
+  - ruleID: bingo_win_hor
+    rule: {fileID: 11400000, guid: 506fec4bd436e0946862e233e99f1bb5, type: 2}
+    priority: 0
+  - ruleID: bingo_win_ver
+    rule: {fileID: 11400000, guid: 20517e5a67bd6d94a867f256cdc9a068, type: 2}
+    priority: 0

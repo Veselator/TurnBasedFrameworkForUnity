@@ -9,10 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87fe4d47267274342ad1b714936c07bc, type: 3}
-  m_Name: BingoCurrentRules
+  m_Script: {fileID: 11500000, guid: f96ee3240e68b9140a6d3b33b55dd5e9, type: 3}
+  m_Name: RuleFourInRowVertical
   m_EditorClassIdentifier: 
-  rules:
-  - linkedRuleID: bingo_win_diag
-  - linkedRuleID: bingo_win_hor
-  - linkedRuleID: bingo_win_ver

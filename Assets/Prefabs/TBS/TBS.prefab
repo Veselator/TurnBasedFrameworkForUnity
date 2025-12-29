@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3324203739695799423}
   - component: {fileID: 8291134004580568764}
   - component: {fileID: 5269790425466623751}
+  - component: {fileID: 2405089403778058654}
   - component: {fileID: 3914662021832132693}
   m_Layer: 0
   m_Name: TBS
@@ -135,6 +136,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f126dfeacedf7aa4985580fb251d49ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2405089403778058654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3219307542441458202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fca7a45ca5b81e45ae9631bb48ab94e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3914662021832132693

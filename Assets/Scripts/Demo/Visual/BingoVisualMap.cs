@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class BingoVisualMap : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
+    // Отвечает за визуализацию карты
+    private Transform[][] points;
+    public void Init()
     {
         
     }
