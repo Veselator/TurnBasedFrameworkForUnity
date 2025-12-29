@@ -6,9 +6,19 @@ public class BingoMap : TBS_BaseMap
 {
     // Модель данных карты демки - Бинго
     private PieceColumn[] _map;
+
     private int _maxHeight;
+    public int Height => _maxHeight;
+
     private int _width;
+    public int Width => _width;
+
+    private Piece[][] _outMapCashed;
+    private bool _isMapFlagDirty = true; // Флаг на пересчёт карты
     public override IEnumerable Map => GetMap();
+
+    private Piece lastModifiedThing;
+    public override object LastModifiedThing => lastModifiedThing;
 
     public event Action OnElementAdded;
     public event Action OnMapCreated;
@@ -32,6 +42,7 @@ public class BingoMap : TBS_BaseMap
             _map[i] = new PieceColumn(_maxHeight);
         }
 
+        _outMapCashed = new Piece[_maxHeight][];
         OnMapCreated?.Invoke();
     }
 
@@ -48,12 +59,32 @@ public class BingoMap : TBS_BaseMap
     public void AddPiece(Piece piece, int columnId)
     {
         if (columnId < 0 || columnId >= _map.Length) return;
-        if (_map[columnId].AddElement(piece)) OnElementAdded?.Invoke();
+        if (_map[columnId].AddElement(piece))
+        {
+            lastModifiedThing = piece;
+            _isMapFlagDirty = true;
+            OnElementAdded?.Invoke();
+        }
+    }
+
+    public void AddPiece(int playerId, int columnId)
+    {
+        // Вопрос - почему-бы сразу тут не проверять через NumOfElementsIn
+        // влазит ли кусок или нет?
+        // Ответ: можно, но разница не существенная
+
+        AddPiece(new Piece(playerId, columnId, _map[columnId].NumOfElementsIn), columnId);
+    }
+
+    public bool IsColumnFilled(int columnId)
+    {
+        if (columnId < 0 || columnId >= _map.Length) return false;
+        return _map[columnId].IsFilled();
     }
 
     public Piece[][] GetMap()
     {
-        // На выходе должно условно такая матрица
+        // На выходе должна условно такая матрица
 
         // [4] = 
         // [3] =    P
@@ -64,7 +95,8 @@ public class BingoMap : TBS_BaseMap
 
         // Где P - Piece
 
-        Piece[][] outMap = new Piece[_maxHeight][];
+        if (!_isMapFlagDirty) return _outMapCashed;
+        _isMapFlagDirty = false;
 
         for (int y = 0; y < _maxHeight; y++)
         {
@@ -77,7 +109,7 @@ public class BingoMap : TBS_BaseMap
                 newLine[x] = _map[x][y];
             }
 
-            outMap[y] = newLine;
+            _outMapCashed[y] = newLine;
         }
 
         // Пример как надо проходиться по массиву для получения правильного порядка
@@ -94,7 +126,7 @@ public class BingoMap : TBS_BaseMap
         //    Console.WriteLine();
         //}
 
-        return outMap;
+        return _outMapCashed;
     }
 }
 
@@ -123,6 +155,8 @@ public class PieceColumn
         _columnArrayCashed = c.ToArray();
     }
 
+    public int NumOfElementsIn => _column.Count;
+
     public Piece GetElement(int id)
     {
         if (id < 0 || id >= _column.Count) return new Piece();
@@ -149,21 +183,29 @@ public class PieceColumn
         }
         return false;
     }
+
+    public bool IsFilled()
+    {
+        return _column.Count >= _maxHeight;
+    }
 }
 
 public class Piece
 {
     // Модель данных отдельного кусочка
-    public int playerId;
+    public int playerId { get; private set; }
+    public int X;
+    public int Y;
 
-    public Piece()
-    {
-        playerId = -1;
-    }
+    public Piece() : this(-1, 0, 0) { }
 
-    public Piece(int playerId)
+    public Piece(int playerId) : this(playerId, 0, 0) { }
+
+    public Piece(int playerId, int x, int y)
     {
         this.playerId = playerId;
+        X = x;
+        Y = y;
     }
 
     public static bool operator ==(Piece first, Piece another)

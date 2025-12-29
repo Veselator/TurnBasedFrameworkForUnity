@@ -10,6 +10,7 @@ public abstract class RuleSO : ScriptableObject, IRule
     [HideInInspector] public string ID { get => id; set => id = value; }
     public abstract RuleType ruleType { get; }
 
+    public virtual void Init() { }
     public abstract IEnumerator ExecuteRule(int turnId, int playerId);
 }
 
@@ -44,7 +45,6 @@ public abstract class RuleBeforeTurnEnd : RuleSO
 public abstract class RuleToAllowAction : RuleSO
 {
     public override RuleType ruleType => RuleType.ToAllowAction;
-    // TODO: что-то придумать
     public abstract bool IsActionAllowed(params int[] parameters);
     public abstract bool IsActionAllowed(IEnumerable parameters);
 }

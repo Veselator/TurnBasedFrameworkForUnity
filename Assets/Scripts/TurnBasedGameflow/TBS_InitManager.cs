@@ -5,14 +5,18 @@ public class TBS_InitManager : MonoBehaviour
     // Отвечает за корректную инициализацию всех систем в рамках пошаговой системы
 
     private GlobalFlags _globalFlags;
+    public GlobalFlags GlobalFlags => _globalFlags;
+    public static TBS_InitManager Instance { get; private set; }
     [SerializeField] private TBS_InitConfigSO _initConfig;
+    public TBS_InitConfigSO InitConfig => _initConfig;
 
-    private void Start()
+    private void Awake()
     {
-        // Временно (возможно (наверное))
-        Init();
+        Instance = this;
     }
 
+    // Инициализация пошаговой системы
+    // Вызывается из внешней области видимости
     public void Init()
     {
         // Глобальные флаги - обязательно

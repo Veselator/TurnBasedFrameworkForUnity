@@ -1,8 +1,9 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Bingo config", menuName = "Demo Bingo/Bingo config")]
+[CreateAssetMenu(fileName = "BingoConfig", menuName = "Demo Bingo/BingoConfig")]
 public class BingoInitConfig : TBS_InitConfigSO
 {
+    [Header("Настройки размеров карты бинго")]
     public int mapWidth;
     public int mapHeight;
 

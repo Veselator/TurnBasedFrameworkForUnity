@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 692fba98e165ad74f800479195471925, type: 3}
+  m_Name: Bingo config
+  m_EditorClassIdentifier: 
+  players:
+  - playerName: human
+    isAI: 0
+  - playerName: bot
+    isAI: 1
+  currentRulesConfig: {fileID: 11400000, guid: 25ff45be96d84144699f68154ae432b9, type: 2}
+  rulesConfig: {fileID: 11400000, guid: 9e26ffd5646f59c4fbe90b0aae5cbf43, type: 2}
+  orderRule: {fileID: 11400000, guid: 67ba06b91847a7446ada3e7504c2cba7, type: 2}
+  areTurnsInfinite: 1
+  maxTurnsCount: 0
+  maxRoundsCount: 3
+  mapWidth: 7
+  mapHeight: 6

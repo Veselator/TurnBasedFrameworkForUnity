@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class BasePlayer : IPlayer
@@ -17,7 +15,7 @@ public abstract class BasePlayer : IPlayer
     public int OverallScore { get; set; }
     public virtual bool IsAI { get; }
 
-    public void Act()
+    public virtual void Act()
     {
         // Заглушка
         Debug.Log($"Player {Name} with ID {ID} is acting.");

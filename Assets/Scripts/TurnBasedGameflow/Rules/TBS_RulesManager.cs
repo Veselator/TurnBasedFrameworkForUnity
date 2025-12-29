@@ -71,7 +71,12 @@ public class TBS_RulesManager : MonoBehaviour
         foreach (var rule in currentRules.rules)
         {
             string ruleId = rule.linkedRuleID;
-            if (_rulesConfigSO.HasRule(ruleId)) _rules.Add(_rulesConfigSO.GetRule(ruleId));
+            if (_rulesConfigSO.HasRule(ruleId))
+            {
+                RuleSO someRule = _rulesConfigSO.GetRule(ruleId);
+                someRule.Init();
+                _rules.Add(someRule);
+            }
         }
 
         RecalculateCashedRules();

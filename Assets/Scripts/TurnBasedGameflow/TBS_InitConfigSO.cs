@@ -33,4 +33,5 @@ public struct PlayerInfo
 {
     public string playerName;
     public bool isAI;
+    public int aiDifficulty;
 }
