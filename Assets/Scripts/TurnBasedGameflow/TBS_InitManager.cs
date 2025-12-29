@@ -111,6 +111,12 @@ public class TBS_InitManager : MonoBehaviour
         }
 
         // Начали!
+        // Проблема - другие менеджеры не успевали подписаться
+        //TBS_TurnsManager.Instance.StartGame();
+    }
+
+    public void StartGame()
+    {
         TBS_TurnsManager.Instance.StartGame();
     }
 }

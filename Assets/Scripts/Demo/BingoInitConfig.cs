@@ -7,5 +7,6 @@ public class BingoInitConfig : TBS_InitConfigSO
     public int mapWidth;
     public int mapHeight;
 
-    // Как вариант, добавить информацию о внешнем виде фишек для гибкой настройки
+    // Передаём информацию о внещнем виде фишек ссылкой на префабы
+    public GameObject[] piecePrefabsForEachPlayer;
 }

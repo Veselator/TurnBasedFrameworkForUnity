@@ -44,3 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acea20a6ab080774784ace9932b2490e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pieceAnimationSpeed: 17.7
+  _offsetYToSpawnPieces: 1.24
+  _offsetYToDisappearPieces: -10

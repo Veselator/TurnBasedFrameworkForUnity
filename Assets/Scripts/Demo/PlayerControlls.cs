@@ -8,6 +8,7 @@ public class PlayerControlls : MonoBehaviour
 
     // ¬ажные переменные
     private int _selectedColumnId = 0; // куда сейчас готов кинуть игрок
+    public int CurrentColumnId => _selectedColumnId;
     private int _maxColumnId;
     private int _currentPlayerId;
     private bool _isControllAllowed = false;
@@ -69,7 +70,6 @@ public class PlayerControlls : MonoBehaviour
     {
         _currentPlayerId = playerId;
         _isControllAllowed = true;
-        // TODO: проверка, €вл€етс€ ли текущий столбец зан€тым
     }
 
     private void TryToMove(int direction)
@@ -79,11 +79,12 @@ public class PlayerControlls : MonoBehaviour
 
         int newId = _selectedColumnId + direction; // ѕолучаем новый id
 
-        while (newId > 0 && newId <= _maxColumnId)
+        while (newId >= 0 && newId <= _maxColumnId)
         {
             if (!_map.IsColumnFilled(newId)) // ≈сли не заполнен - перемещатьс€ можем
             {
                 _selectedColumnId = newId;
+                //Debug.Log($"Moving pointer to column {_selectedColumnId}");
                 OnMove?.Invoke(newId);
                 return;
             }
@@ -95,8 +96,11 @@ public class PlayerControlls : MonoBehaviour
     private void Release()
     {
         if (!_isControllAllowed) return;
-        _isControllAllowed = false;
-        _map.AddPiece(_currentPlayerId, _selectedColumnId);
-        _globalFlags.TriggerOnTurnEnded(_turnsManager.CurrentTurn, _currentPlayerId);
+        // ≈сли можем добавить - значит, заканчиваем ход
+        if (_map.AddPiece(_currentPlayerId, _selectedColumnId))
+        {
+            _isControllAllowed = false;
+            _globalFlags.TriggerOnTurnEnded(_turnsManager.CurrentTurn, _currentPlayerId);
+        }
     }
 }

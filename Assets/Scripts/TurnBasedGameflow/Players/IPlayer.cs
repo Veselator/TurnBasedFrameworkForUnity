@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public interface IPlayer
 {
     // Интерфейс игрока для пошаговой системы
@@ -18,4 +14,6 @@ public interface IPlayer
     // Для ии - начало размышлений над ходом
     // Для человека - возможность взаимодействовать с интерфейсом
     void Act();
+    void Init(GlobalFlags gf); // gf lol
+    void Init(GlobalFlags gf, TBS_TurnsManager turnsManager);
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class BingoMap : TBS_BaseMap
 {
@@ -12,15 +13,16 @@ public class BingoMap : TBS_BaseMap
 
     private int _width;
     public int Width => _width;
+    public int TotalNumOfElements { get; private set; } = 0;
 
     private Piece[][] _outMapCashed;
-    private bool _isMapFlagDirty = true; // Флаг на пересчёт карты
+    private bool _isMapFlagDirty; // Флаг на пересчёт карты
     public override IEnumerable Map => GetMap();
 
     private Piece lastModifiedThing;
     public override object LastModifiedThing => lastModifiedThing;
 
-    public event Action OnElementAdded;
+    public event Action<int, int, int> OnElementAdded; // x, y, playerId
     public event Action OnMapCreated;
     public event Action OnMapReset;
 
@@ -30,6 +32,7 @@ public class BingoMap : TBS_BaseMap
 
         _maxHeight = bingoConfig.mapHeight;
         _width = bingoConfig.mapWidth;
+        _isMapFlagDirty = true;
 
         CreateMap();
     }
@@ -39,7 +42,7 @@ public class BingoMap : TBS_BaseMap
         _map = new PieceColumn[_width];
         for (int i = 0; i < _width; i++)
         {
-            _map[i] = new PieceColumn(_maxHeight);
+            _map[i] = new PieceColumn(_maxHeight, i);
         }
 
         _outMapCashed = new Piece[_maxHeight][];
@@ -53,33 +56,42 @@ public class BingoMap : TBS_BaseMap
             q.Clear();
         }
 
+        TotalNumOfElements = 0;
         OnMapReset?.Invoke();
     }
 
-    public void AddPiece(Piece piece, int columnId)
+    public bool AddPiece(Piece piece, int columnId)
     {
-        if (columnId < 0 || columnId >= _map.Length) return;
+        if (columnId < 0 || columnId >= _map.Length) return false;
         if (_map[columnId].AddElement(piece))
         {
             lastModifiedThing = piece;
             _isMapFlagDirty = true;
-            OnElementAdded?.Invoke();
+            TotalNumOfElements++;
+            OnElementAdded?.Invoke(piece.X, piece.Y, piece.playerId);
+            return true;
         }
+        return false;
     }
 
-    public void AddPiece(int playerId, int columnId)
+    public bool AddPiece(int playerId, int columnId)
     {
         // Вопрос - почему-бы сразу тут не проверять через NumOfElementsIn
         // влазит ли кусок или нет?
         // Ответ: можно, но разница не существенная
 
-        AddPiece(new Piece(playerId, columnId, _map[columnId].NumOfElementsIn), columnId);
+        return AddPiece(new Piece(playerId, columnId, _map[columnId].NumOfElementsIn), columnId);
     }
 
     public bool IsColumnFilled(int columnId)
     {
         if (columnId < 0 || columnId >= _map.Length) return false;
         return _map[columnId].IsFilled();
+    }
+
+    public List<int> GetAvailableColumns()
+    {
+        return _map.Where(x => !x.IsFilled()).Select(x => x.ID).ToList();
     }
 
     public Piece[][] GetMap()
@@ -108,7 +120,7 @@ public class BingoMap : TBS_BaseMap
             {
                 newLine[x] = _map[x][y];
             }
-
+            //UnityEngine.Debug.Log($"Line y={y} created");
             _outMapCashed[y] = newLine;
         }
 
@@ -136,23 +148,26 @@ public class PieceColumn
     // Реализует ограничение по высоте
 
     private Queue<Piece> _column;
-    private Piece[] _columnArrayCashed;
+    private List<Piece> _columnListCashed;
     private int _maxHeight;
     private const int _defaultHeight = 6;
+    public int ID { get; private set; }
 
     public Piece this[int id] => GetElement(id);
 
-    public PieceColumn() : this(new Queue<Piece>(), _defaultHeight) { }
+    public PieceColumn() : this(new Queue<Piece>(), _defaultHeight, 0) { }
 
-    public PieceColumn(int height) : this(new Queue<Piece>(), height) { }
+    public PieceColumn(int height) : this(new Queue<Piece>(), height, 0) { }
+    public PieceColumn(int height, int id) : this(new Queue<Piece>(), height, id) { }
 
-    public PieceColumn(Queue<Piece> column) : this(column, _defaultHeight) { }
+    public PieceColumn(Queue<Piece> column) : this(column, _defaultHeight, 0) { }
 
-    public PieceColumn(Queue<Piece> c, int height)
+    public PieceColumn(Queue<Piece> c, int height, int id)
     {
         _column = c;
         _maxHeight = height;
-        _columnArrayCashed = c.ToArray();
+        _columnListCashed = c.ToList();
+        ID = id;
     }
 
     public int NumOfElementsIn => _column.Count;
@@ -160,12 +175,7 @@ public class PieceColumn
     public Piece GetElement(int id)
     {
         if (id < 0 || id >= _column.Count) return new Piece();
-        return _columnArrayCashed[id];
-    }
-
-    public Piece[] GetArray()
-    {
-        return _columnArrayCashed;
+        return _columnListCashed[id];
     }
 
     public void Clear()
@@ -178,7 +188,7 @@ public class PieceColumn
         if (_column.Count < _maxHeight)
         {
             _column.Enqueue(piece);
-            _columnArrayCashed = _column.ToArray();
+            _columnListCashed.Add(piece);
             return true;
         }
         return false;

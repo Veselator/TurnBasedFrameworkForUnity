@@ -15,13 +15,18 @@ MonoBehaviour:
   players:
   - playerName: human
     isAI: 0
+    aiDifficulty: 0
   - playerName: bot
     isAI: 1
+    aiDifficulty: 0
   currentRulesConfig: {fileID: 11400000, guid: 25ff45be96d84144699f68154ae432b9, type: 2}
   rulesConfig: {fileID: 11400000, guid: 9e26ffd5646f59c4fbe90b0aae5cbf43, type: 2}
-  orderRule: {fileID: 11400000, guid: 67ba06b91847a7446ada3e7504c2cba7, type: 2}
+  orderRule: {fileID: 11400000, guid: 137d146ac36552344bb8f60fcba696f2, type: 2}
   areTurnsInfinite: 1
-  maxTurnsCount: 0
+  maxTurnsCount: 42
   maxRoundsCount: 3
   mapWidth: 7
   mapHeight: 6
+  piecePrefabsForEachPlayer:
+  - {fileID: 886520769558770651, guid: 67924cd0c8310544891a0dcddef670b5, type: 3}
+  - {fileID: 2392113906822210019, guid: 9b8354227628eb0408dc4a5a6c907d58, type: 3}

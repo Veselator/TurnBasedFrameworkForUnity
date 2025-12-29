@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class TBS_BeforeTurnEndHandler : MonoBehaviour
 {
     // Обработка правил перед концом хода
+    // А если точнее, то перед подготовкой нового хода, на этапе NextTurnQuery
 
     // Правила RulesAfterTurnCashed, RulesAfterCycleEndedCashed и RulesToWinOrDefeatCashed
 
@@ -34,7 +32,7 @@ public class TBS_BeforeTurnEndHandler : MonoBehaviour
     {
         if (_globalFlags != null)
         {
-            _globalFlags.OnTurnStartedPrepared.RemoveListener(HandleBeforeTurnEnd);
+            _globalFlags.NextTurnQuery.RemoveListener(HandleBeforeTurnEnd);
         }
     }
 
@@ -87,7 +85,7 @@ public class TBS_BeforeTurnEndHandler : MonoBehaviour
                 else if (result.isDraft)
                 {
                     // Ничья
-                    _globalFlags.TriggerOnRoundEnded(-1); // Ничья
+                    _globalFlags.TriggerOnRoundEnded(-1);
                     yield break;
                 }
             }

@@ -14,11 +14,16 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         _map = BingoMap.Instance as BingoMap;
         // Так как в классе карты матрица не пересоздаётся (значения линий просто перезаписываются),
         // _matrix будет ссылаться на актуальную карту
-        _matrix = _map.Map as Piece[][];
+        //_matrix = _map.Map as Piece[][];
     }
 
     public override RuleWinResult CheckIsAnybodyWon()
     {
+        // Небольшая оптимизация - если фишек меньше 4, то никто в принципе не может победить
+        if (_map.TotalNumOfElements < 4) return new RuleWinResult();
+
+        if(_matrix == null) _matrix = _map.Map as Piece[][];
+
         // Берём последнюю изменённую фишку
         Piece lastPiece = _map.LastModifiedThing as Piece;
 
@@ -59,11 +64,12 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         // Проблема - работает только пока startX > endX
         // Но в рамках программы startX всегда будет меньше endX
         // Или как вариант, использовать дополнительные переменные и тернарный оператор
+
         for (int x = startX; x <= endX; x += directionX)
         {
-            if (y >= 0 && x >= 0)
+            if (y >= 0 && x >= 0 && y < _map.Height)
             {
-                if (_matrix[y][x].playerId == currentPlayerId)
+                if (_matrix[y] != null && _matrix[y][x].playerId == currentPlayerId)
                 {
                     // Если совпадают id владельцев фишек - значит, хорошо
                     // Можем продолжать цепь

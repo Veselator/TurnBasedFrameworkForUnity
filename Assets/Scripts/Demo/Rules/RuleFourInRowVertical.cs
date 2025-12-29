@@ -15,6 +15,8 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
 
     public override RuleWinResult CheckIsAnybodyWon()
     {
+        if (_map.TotalNumOfElements < 4) return new RuleWinResult();
+
         // Берём последнюю изменённую фишку
         Piece lastPiece = _map.LastModifiedThing as Piece;
         Piece[][] map = _map.Map as Piece[][];

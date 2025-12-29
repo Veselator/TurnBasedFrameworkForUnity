@@ -15,10 +15,25 @@ public abstract class BasePlayer : IPlayer
     public int OverallScore { get; set; }
     public virtual bool IsAI { get; }
 
+
+    protected GlobalFlags _globalFlags;
+    protected TBS_TurnsManager _turnsManager;
+
     public virtual void Act()
     {
         // Заглушка
-        Debug.Log($"Player {Name} with ID {ID} is acting.");
+        //Debug.Log($"Player {Name} with ID {ID} is acting.");
+    }
+
+    public virtual void Init(GlobalFlags gf)
+    {
+        _globalFlags = gf;
+    }
+
+    public virtual void Init(GlobalFlags gf, TBS_TurnsManager turnsManager)
+    {
+        _globalFlags = gf;
+        _turnsManager = turnsManager;
     }
 
     public BasePlayer() : this(0, "Player") { }
