@@ -25,3 +25,6 @@ MonoBehaviour:
   - ruleID: wait
     rule: {fileID: 11400000, guid: ffa7235d4bf2a0148a4a10ce20bad659, type: 2}
     priority: 0
+  - ruleID: wait_after_round
+    rule: {fileID: 11400000, guid: 7d9a3eb763e4bda4da25109b0fd892d3, type: 2}
+    priority: 0

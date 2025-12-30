@@ -17,7 +17,7 @@ public class UniversalAnimator : MonoBehaviour
     public void AnimateWithOffset(Vector2 offset, float speed, bool isNeedToDestroyAtEnd)
     {
         Vector2 endPosition = (Vector2)transform.position + offset;
-        Animate(endPosition, speed);
+        Animate(endPosition, speed, isNeedToDestroyAtEnd);
     }
 
     public IEnumerator TransformPosition(Vector2 endPosition, float speed)

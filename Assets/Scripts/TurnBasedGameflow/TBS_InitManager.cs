@@ -13,15 +13,13 @@ public class TBS_InitManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        _globalFlags = new GlobalFlags();
     }
 
     // Инициализация пошаговой системы
     // Вызывается из внешней области видимости
     public void Init()
     {
-        // Глобальные флаги - обязательно
-        _globalFlags = new GlobalFlags();
-        
         // Отлов ошибок, когда нужного компонента системы нет!
 
         // Инициализируем игроков

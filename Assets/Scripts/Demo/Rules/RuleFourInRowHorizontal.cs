@@ -42,6 +42,7 @@ public class RuleFourInRowHorizontal : RuleToWinOrDefeat
             {
                 // Если совпадают id владельцев фишек - значит, хорошо
                 // Можем продолжать цепь
+                Debug.Log($"HORIZONTAL Piece at y={lastPiece.Y} x={x} matches currentPlayerId {currentPlayerId}; In row {currentPiecesInRow} pieces; max pieces {maxPiecesInRow}");
                 currentPiecesInRow++;
             }
             else
@@ -53,6 +54,7 @@ public class RuleFourInRowHorizontal : RuleToWinOrDefeat
         }
 
         if (currentPiecesInRow > maxPiecesInRow) maxPiecesInRow = currentPiecesInRow;
+        Debug.Log($"Total max pieces horizontal {maxPiecesInRow}");
 
         if (maxPiecesInRow >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
         else return new RuleWinResult();

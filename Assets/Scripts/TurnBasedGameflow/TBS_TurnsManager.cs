@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TBS_TurnsManager : MonoBehaviour
@@ -13,6 +14,7 @@ public class TBS_TurnsManager : MonoBehaviour
     private bool _isNextTurnQueuedFlag = false;
     private int _currentTurn = 0;
     public int CurrentTurn => _currentTurn;
+    public IPlayer CurrentPlayer => _players.GetPlayerByID(_orderManager.CurrentPlayerID);
 
     private bool _areInfinityTurns;
     private int _maxTurns;
@@ -25,6 +27,8 @@ public class TBS_TurnsManager : MonoBehaviour
     private int _maxRounds;
     public int MaxRounds => _maxRounds;
     private bool _isNextRoundQueuedFlag = false;
+
+    public event Action<int> OnTurnChanged;
 
     private void Awake()
     {
@@ -65,10 +69,11 @@ public class TBS_TurnsManager : MonoBehaviour
     // Начать игру
     public void StartGame()
     {
-        _globalFlags.TriggerOnGameStarted();
-        _globalFlags.TriggerOnRoundStarted(_currentRound);
+        _globalFlags.TriggerOnGameStarted(); // Async!!!!!
+        _globalFlags.TriggerOnRoundStarted(_currentTurn);
         // Асинхронное начало хода? Надо подумать
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
+        OnTurnChanged?.Invoke(CurrentRound);
     }
 
     // Дальше - обработчики событий
@@ -99,6 +104,7 @@ public class TBS_TurnsManager : MonoBehaviour
         }
 
         _currentTurn++;
+        OnTurnChanged?.Invoke(_currentTurn);
         _orderManager.NextPlayer();
 
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
@@ -109,6 +115,7 @@ public class TBS_TurnsManager : MonoBehaviour
         // Начало хода
         IPlayer currentPlayer = _players.GetPlayerByID(playerId);
         currentPlayer.Act();
+        OnTurnChanged?.Invoke(CurrentRound);
         if (!currentPlayer.IsAI) _globalFlags.TriggerOnHumansTurnStarted(playerId);
     }
 
@@ -135,6 +142,9 @@ public class TBS_TurnsManager : MonoBehaviour
     {
         if (!_isNextRoundQueuedFlag) return;
         _isNextRoundQueuedFlag = false;
+
+        _currentTurn = 0;
+        OnTurnChanged?.Invoke(_currentTurn);
 
         _globalFlags.TriggerOnRoundStarted(_currentRound);
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);

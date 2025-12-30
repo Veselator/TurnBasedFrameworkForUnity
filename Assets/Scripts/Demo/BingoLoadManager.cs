@@ -7,6 +7,11 @@ public class BingoLoadManager : MonoBehaviour
     [SerializeField] private BingoVisualMapGenerator _mapGenerator;
     [SerializeField] private BingoVisualUserPointer _userPointer;
 
+    [SerializeField] private StepNumberText _stepNumberText;
+    [SerializeField] private TurnText _turnText;
+    [SerializeField] private PointsText _pointsText;
+    [SerializeField] private RoundText _roundText;
+
     private void Start()
     {
         TBS_InitManager.Instance.Init();
@@ -14,6 +19,11 @@ public class BingoLoadManager : MonoBehaviour
         VisualPieceFactory.Instance.Init(TBS_InitManager.Instance.InitConfig);
         _mapGenerator.Init();
         _userPointer.Init();
+
+        _stepNumberText.Init();
+        _turnText.Init();
+        _pointsText.Init();
+        _roundText.Init();
 
         TBS_InitManager.Instance.StartGame();
     }

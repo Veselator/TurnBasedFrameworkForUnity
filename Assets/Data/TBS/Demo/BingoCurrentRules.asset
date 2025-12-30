@@ -17,3 +17,4 @@ MonoBehaviour:
   - linkedRuleID: bingo_win_hor
   - linkedRuleID: bingo_win_ver
   - linkedRuleID: wait
+  - linkedRuleID: wait_after_round
