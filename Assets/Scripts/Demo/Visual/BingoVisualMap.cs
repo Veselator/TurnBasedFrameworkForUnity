@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BingoVisualMap : MonoBehaviour
@@ -13,6 +16,7 @@ public class BingoVisualMap : MonoBehaviour
     [SerializeField] private float _pieceAnimationSpeed = 1.0f;
     [SerializeField] private float _offsetYToSpawnPieces = -1f;
     [SerializeField] private float _offsetYToDisappearPieces = -10f;
+    [SerializeField] private float _endRoundAnimationDuration = 1.3f;
 
     public float ToppestY => _points[_points.Length - 1][0].position.y;
 
@@ -68,9 +72,59 @@ public class BingoVisualMap : MonoBehaviour
 
     private void HandleMapReset()
     {
-        foreach (var piece in _pieces)
+        int[] order = new int[_pieces.Count];
+        for (int i = 0; i < order.Length; i++)
         {
-            piece.GetComponent<UniversalAnimator>().AnimateWithOffset(new Vector2(0, _offsetYToDisappearPieces), _pieceAnimationSpeed, true);
+            order[i] = i;
+        }
+
+        var rng = new System.Random();
+        for (int i = order.Length - 1; i > 0; i--)
+        {
+            int j = rng.Next(i + 1);
+            (order[i], order[j]) = (order[j], order[i]);
+        }
+
+        StartCoroutine(ClearMap(order, _endRoundAnimationDuration));
+    }
+
+    private IEnumerator ClearMap(int[] order, float totalTimeToClean)
+    {
+        if (order.Length == 0)
+        {
+            _pieces.Clear();
+            yield break;
+        }
+
+        if (order.Length == 1)
+        {
+            _pieces[order[0]].GetComponent<UniversalAnimator>()
+                .AnimateWithOffset(new Vector2(0, _offsetYToDisappearPieces), _pieceAnimationSpeed, true);
+            _pieces.Clear();
+            yield break;
+        }
+
+        float elapsed = 0f;
+        int currentIndex = 0;
+
+        while (currentIndex < order.Length)
+        {
+            float progress = (float)currentIndex / (order.Length - 1);
+
+            float easedProgress = (float)Math.Sqrt(progress);
+
+            float targetTime = easedProgress * totalTimeToClean;
+
+            while (elapsed < targetTime)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            _pieces[order[currentIndex]].GetComponent<UniversalAnimator>()
+                .AnimateWithOffset(new Vector2(0, _offsetYToDisappearPieces), _pieceAnimationSpeed, true);
+
+            currentIndex++;
         }
 
         _pieces.Clear();
