@@ -432,7 +432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02b9586a4a2b5454e94519c598888883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animationDuration: 0.2
+  _animationDuration: 0.59
 --- !u!114 &434159118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,7 +447,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parallaxFactor: 0.5
   parallaxX: 1
-  parallaxY: 0
+  parallaxY: 1
 --- !u!114 &434159119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,7 +460,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26203e05079ab941aa5fb0740ebdf19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotatingSpeed: 0.89
+  _rotatingSpeed: 2
 --- !u!212 &434159120
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -560,7 +560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02b9586a4a2b5454e94519c598888883, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animationDuration: 0.2
+  _animationDuration: 0.59
 --- !u!114 &566711642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parallaxFactor: 0.5
   parallaxX: 1
-  parallaxY: 0
+  parallaxY: 1
 --- !u!114 &566711643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -588,7 +588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26203e05079ab941aa5fb0740ebdf19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rotatingSpeed: 0.89
+  _rotatingSpeed: 2
 --- !u!212 &566711644
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1030,8 +1030,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 774, y: 483}
-  m_SizeDelta: {x: 382.9985, y: 50}
+  m_AnchoredPosition: {x: 777.68353, y: 483}
+  m_SizeDelta: {x: 222.6443, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &740104757
 MonoBehaviour:

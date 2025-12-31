@@ -13,13 +13,12 @@ public class TBS_BotFirstRule : TBS_BaseOrderRule
             if (player.IsAI)
             {
                 order.Add(player.ID);
-                break;
             }
         }
 
         foreach (var player in players)
         {
-            if (!player.IsAI)
+            if (!order.Contains(player.ID))
             {
                 order.Add(player.ID);
             }

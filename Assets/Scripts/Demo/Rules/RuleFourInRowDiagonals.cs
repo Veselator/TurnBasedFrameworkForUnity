@@ -1,112 +1,96 @@
-using System;
+п»їusing System;
 using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RuleFourInRowDiagonals", menuName = "Demo Bingo/RuleFourInRowDiagonals")]
 public class RuleFourInRowDiagonals : RuleToWinOrDefeat
 {
-    // Условие победы в бинго если 4 в ряд по диагоналям
     private BingoMap _map;
     private Piece[][] _matrix;
 
     public override void Init()
     {
         _map = BingoMap.Instance as BingoMap;
-        // Так как в классе карты матрица не пересоздаётся (значения линий просто перезаписываются),
-        // _matrix будет ссылаться на актуальную карту
-        //_matrix = _map.Map as Piece[][];
     }
 
     public override RuleWinResult CheckIsAnybodyWon()
     {
-        // Небольшая оптимизация - если фишек меньше 4, то никто в принципе не может победить
         if (_map.TotalNumOfElements < 4) return new RuleWinResult();
 
-        if(_matrix == null) _matrix = _map.Map as Piece[][];
+        _matrix = _map.Map as Piece[][];
 
-        // Берём последнюю изменённую фишку
         Piece lastPiece = _map.LastModifiedThing as Piece;
-
-        // Мы должны проверить такую область
-        // *     *
-        //  *   *
-        //   * *
-        //    P
-        //   * *
-        //  *   *
-        // *     *
-        // где P - стартовая фишка
-        // * - область проверки
-
-        int startX = Math.Min(lastPiece.X - 3,  _map.Width - 1);
-        int endX = Math.Min(lastPiece.X + 3, _map.Width - 1);
-
-        int startY = Math.Min(lastPiece.Y - 3, _map.Height - 1);
-        int endY = Math.Min(lastPiece.Y + 3, _map.Height - 1);
-
         int currentPlayerId = lastPiece.playerId;
 
-        int maxPiecesInRow = GetMaxPiecesInRowDiagonal(startX, startY, endX, endY, currentPlayerId, 1, 1);
-        if (maxPiecesInRow >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
+        int count1 = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, 1);
+        if (count1 >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
 
-        maxPiecesInRow = GetMaxPiecesInRowDiagonal(startX, endY, endX, startY, currentPlayerId, 1, -1);
-        if (maxPiecesInRow >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
-        else return new RuleWinResult();
+        int count2 = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, -1);
+        if (count2 >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
+
+        return new RuleWinResult();
     }
 
-    private int GetMaxPiecesInRowDiagonal(int startX, int startY, int endX, int endY, int currentPlayerId, int directionX, int directionY)
+    private int CheckDiagonal(int pieceX, int pieceY, int playerId, int dirX, int dirY)
     {
-        int maxPiecesInRow = 0;
-        int currentPiecesInRow = 0;
+        int startX = pieceX;
+        int startY = pieceY;
 
-        int y = startY;
-
-        // Проблема - работает только пока startX > endX
-        // Но в рамках программы startX всегда будет меньше endX
-        // Или как вариант, использовать дополнительные переменные и тернарный оператор
-
-        for (int x = startX; x <= endX; x += directionX)
+        for (int i = 0; i < 3; i++)
         {
-            if (y >= 0 && x >= 0 && y < _map.Height)
-            {
-                if (_matrix[y] != null && _matrix[y][x].playerId == currentPlayerId)
-                {
-                    // Если совпадают id владельцев фишек - значит, хорошо
-                    // Можем продолжать цепь
-                    currentPiecesInRow++;
-                }
-                else
-                {
-                    // Если id не совпадают - плохо, цепь разорвана
-                    if (currentPiecesInRow > maxPiecesInRow) maxPiecesInRow = currentPiecesInRow;
-                    currentPiecesInRow = 0;
-                }
-            }
-            y += directionY;
+            int prevX = startX - dirX;
+            int prevY = startY - dirY;
+
+            if (!IsInBounds(prevX, prevY))
+                break;
+
+            startX = prevX;
+            startY = prevY;
         }
 
-        //while (x <= endX && y <= endY)
-        //{
-        //    if (y >= 0 && x >= 0)
-        //    {
-        //        if (_matrix[y][x].playerId == currentPlayerId)
-        //        {
-        //            // Если совпадают id владельцев фишек - значит, хорошо
-        //            // Можем продолжать цепь
-        //            currentPiecesInRow++;
-        //        }
-        //        else
-        //        {
-        //            // Если id не совпадают - плохо, цепь разорвана
-        //            if (currentPiecesInRow > maxPiecesInRow) maxPiecesInRow = currentPiecesInRow;
-        //            currentPiecesInRow = 0;
-        //        }
-        //    }
-        //    x += directionX;
-        //    y += directionY;
-        //}
-        if (currentPiecesInRow > maxPiecesInRow) maxPiecesInRow = currentPiecesInRow;
-        return maxPiecesInRow;
+        // РЁР°Рі 2: РРґС‘Рј РїРѕ РґРёР°РіРѕРЅР°Р»Рё Рё СЃС‡РёС‚Р°РµРј
+        int maxInRow = 0;
+        int currentInRow = 0;
+
+        int x = startX;
+        int y = startY;
+
+        while (IsInBounds(x, y))
+        {
+            Piece piece = GetPiece(x, y);
+            int pieceOwner = piece?.playerId ?? -1;
+
+            if (pieceOwner == playerId)
+            {
+                currentInRow++;
+                if (currentInRow > maxInRow)
+                    maxInRow = currentInRow;
+            }
+            else
+            {
+                currentInRow = 0;
+            }
+
+            x += dirX;
+            y += dirY;
+
+            // Р—Р°С‰РёС‚Р° РѕС‚ Р±РµСЃРєРѕРЅРµС‡РЅРѕРіРѕ С†РёРєР»Р°
+            if (Math.Abs(x - startX) > 10) break;
+        }
+
+        return maxInRow;
+    }
+
+    private bool IsInBounds(int x, int y)
+    {
+        return x >= 0 && x < _map.Width && y >= 0 && y < _map.Height;
+    }
+
+    private Piece GetPiece(int x, int y)
+    {
+        if (!IsInBounds(x, y)) return null;
+        if (_matrix[y] == null) return null;
+        return _matrix[y][x];
     }
 
     public override IEnumerator ExecuteRule(int turnId, int playerId)

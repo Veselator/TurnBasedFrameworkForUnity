@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878ad936d76a59b42994fdd1b0efb6bb, type: 3}
   m_Name: WaitSomeTimeBeforeTurnEnds
   m_EditorClassIdentifier: 
-  timeToWait: 0.91
+  timeToWait: 0.75

@@ -65,6 +65,8 @@ public class BingoMap : TBS_BaseMap
         if (columnId < 0 || columnId >= _map.Length) return false;
         if (_map[columnId].AddElement(piece))
         {
+            // На этом этапе всё нормально
+            //UnityEngine.Debug.Log($"Added piece y={piece.Y} x={piece.X} playerId={piece.playerId}");
             lastModifiedThing = piece;
             _isMapFlagDirty = true;
             TotalNumOfElements++;
@@ -106,6 +108,8 @@ public class BingoMap : TBS_BaseMap
         //       0123
 
         // Где P - Piece
+
+        // ПРОВЕРИТЬ
 
         if (!_isMapFlagDirty) return _outMapCashed;
         _isMapFlagDirty = false;
@@ -181,6 +185,7 @@ public class PieceColumn
     public void Clear()
     {
         _column.Clear();
+        _columnListCashed.Clear();
     }
 
     public bool AddElement(Piece piece)
@@ -225,7 +230,7 @@ public class Piece
 
     public static bool operator !=(Piece first, Piece another)
     {
-        return first.Equals(another);
+        return !first.Equals(another);
     }
 
     public override bool Equals(object obj)

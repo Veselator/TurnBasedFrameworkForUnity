@@ -24,7 +24,7 @@ MonoBehaviour:
   orderRule: {fileID: 11400000, guid: 137d146ac36552344bb8f60fcba696f2, type: 2}
   areTurnsInfinite: 1
   maxTurnsCount: 42
-  maxRoundsCount: 3
+  maxRoundsCount: 19
   mapWidth: 7
   mapHeight: 6
   piecePrefabsForEachPlayer:
