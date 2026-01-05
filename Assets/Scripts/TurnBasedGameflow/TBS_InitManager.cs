@@ -66,7 +66,7 @@ public class TBS_InitManager : MonoBehaviour
             return;
         }
 
-        // Дальше Handlers - держатель до начала и после конца хода; после конца раунда
+        // Дальше Handlers - держатель до начала и после конца хода; после конца раунда; перед началом игры
         if (TBS_BeforeTurnStartHandler.Instance != null)
         {
             TBS_BeforeTurnStartHandler.Instance.Init(_globalFlags);
@@ -86,7 +86,17 @@ public class TBS_InitManager : MonoBehaviour
             Debug.LogError("Where is TBS_BeforeTurnEndHandler?! You make me unhappy ");
             return;
         }
-        
+
+        if (TBS_BeforeGameStartHandler.Instance != null)
+        {
+            TBS_BeforeGameStartHandler.Instance.Init(_globalFlags);
+        }
+        else
+        {
+            Debug.LogError("Give me my TBS_BeforeGameStartHandler!");
+            return;
+        }
+
         if (TBS_RoundEndHandler.Instance != null)
         {
             TBS_RoundEndHandler.Instance.Init(_globalFlags);

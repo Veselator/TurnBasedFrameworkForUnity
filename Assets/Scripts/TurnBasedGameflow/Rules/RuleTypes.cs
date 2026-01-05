@@ -11,7 +11,15 @@ public abstract class RuleSO : ScriptableObject, IRule
     public abstract RuleType ruleType { get; }
 
     public virtual void Init() { }
-    public abstract IEnumerator ExecuteRule(int turnId, int playerId);
+    public virtual IEnumerator ExecuteRule()
+    {
+        yield return null;
+    }
+
+    public virtual IEnumerator ExecuteRule(int turnId, int playerId)
+    {
+        yield return null;
+    }
 }
 
 public abstract class RuleBeforeGameStart : RuleSO

@@ -59,9 +59,4 @@ public class RuleFourInRowHorizontal : RuleToWinOrDefeat
         if (maxPiecesInRow >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
         else return new RuleWinResult();
     }
-
-    public override IEnumerator ExecuteRule(int turnId, int playerId)
-    {
-        yield break;
-    }
 }

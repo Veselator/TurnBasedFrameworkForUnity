@@ -18,3 +18,4 @@ MonoBehaviour:
   - linkedRuleID: bingo_win_ver
   - linkedRuleID: wait
   - linkedRuleID: wait_after_round
+  - linkedRuleID: draft_rule

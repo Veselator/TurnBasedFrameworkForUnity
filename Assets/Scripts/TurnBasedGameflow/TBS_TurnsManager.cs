@@ -48,6 +48,7 @@ public class TBS_TurnsManager : MonoBehaviour
         _globalFlags.OnTurnStarted.AddListener(OnTurnStarted);
         _globalFlags.OnRoundEnded.AddListener(OnRoundEnded);
         _globalFlags.NextRoundAllowed.AddListener(OnNextRoundAllowed);
+        _globalFlags.OnGameStartedAllowed.AddListener(OnGameStartAllowed);
 
         _orderManager = TBS_OrderManager.Instance;
         _players = TBS_PlayersManager.Instance;
@@ -63,16 +64,21 @@ public class TBS_TurnsManager : MonoBehaviour
             _globalFlags.OnTurnStarted.RemoveListener(OnTurnStarted);
             _globalFlags.OnRoundEnded.RemoveListener(OnRoundEnded);
             _globalFlags.NextRoundAllowed.RemoveListener(OnNextRoundAllowed);
+            _globalFlags.OnGameStartedAllowed.AddListener(OnGameStartAllowed);
         }
     }
 
     // Начать игру
     public void StartGame()
     {
-        _globalFlags.TriggerOnGameStarted(); // Async!!!!!
+        _globalFlags.TriggerOnGameStartedQuery();
+    }
+
+    private void OnGameStartAllowed()
+    {
         _globalFlags.TriggerOnRoundStarted(_currentTurn);
-        // Асинхронное начало хода? Надо подумать
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
+        //OnTurnChanged?.Invoke(CurrentRound);
         OnTurnChanged?.Invoke(CurrentRound);
     }
 

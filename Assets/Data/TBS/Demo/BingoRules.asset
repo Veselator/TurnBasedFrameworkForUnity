@@ -28,3 +28,6 @@ MonoBehaviour:
   - ruleID: wait_after_round
     rule: {fileID: 11400000, guid: 7d9a3eb763e4bda4da25109b0fd892d3, type: 2}
     priority: 0
+  - ruleID: draft_rule
+    rule: {fileID: 11400000, guid: 09bdfbd00b40d7644a36abb730f90585, type: 2}
+    priority: 0

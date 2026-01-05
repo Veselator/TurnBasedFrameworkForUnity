@@ -48,7 +48,6 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
             startY = prevY;
         }
 
-        // Шаг 2: Идём по диагонали и считаем
         int maxInRow = 0;
         int currentInRow = 0;
 
@@ -91,10 +90,5 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         if (!IsInBounds(x, y)) return null;
         if (_matrix[y] == null) return null;
         return _matrix[y][x];
-    }
-
-    public override IEnumerator ExecuteRule(int turnId, int playerId)
-    {
-        yield break;
     }
 }

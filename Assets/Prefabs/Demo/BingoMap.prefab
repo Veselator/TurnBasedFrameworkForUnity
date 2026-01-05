@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pieceAnimationSpeed: 19.8
-  _offsetYToSpawnPieces: 1.24
+  _offsetYToSpawnPieces: 1.5
   _offsetYToDisappearPieces: -14
   _endRoundAnimationDuration: 0.52

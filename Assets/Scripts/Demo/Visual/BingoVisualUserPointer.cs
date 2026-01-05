@@ -6,6 +6,7 @@ public class BingoVisualUserPointer : MonoBehaviour
     private PlayerControlls _playerControlls;
     private GlobalFlags _globalFlags;
     private BingoVisualMap _visualMap;
+    private BingoMap _map;
 
     [SerializeField] private float _pieceSpeed = 2f;
     [SerializeField] private float _pieceYOffset = 1.2f;
@@ -20,6 +21,7 @@ public class BingoVisualUserPointer : MonoBehaviour
         _playerControlls = PlayerControlls.Instance;
         _globalFlags = TBS_InitManager.Instance.GlobalFlags;
         _visualMap = BingoVisualMap.Instance;
+        _map = BingoMap.Instance as BingoMap;
 
         _playerControlls.OnMove += HandleMove;
         _globalFlags.OnHumansTurnStarted.AddListener(ShowPointer);
@@ -46,8 +48,16 @@ public class BingoVisualUserPointer : MonoBehaviour
 
     private void HandleMove(int columnId)
     {
-        Vector2 newPosition = new Vector2(_visualMap.GetXByColumnId(columnId), _pointer.transform.position.y);
+        float yPos = _map.IsColumnFilled(columnId) ? _pointer.transform.position.y : _visualMap.GetYByRowId(_map.GetLengthOfColumn(columnId));
+        Vector2 newPosition = new Vector2(_visualMap.GetXByColumnId(columnId), yPos);
         _pointerAnimationComponent.Animate(newPosition, _pieceSpeed);
+    }
+
+    private void ForceToChangePosition(int columnId)
+    {
+        float yPos = _map.IsColumnFilled(columnId) ? _pointer.transform.position.y : _visualMap.GetYByRowId(_map.GetLengthOfColumn(columnId));
+        Vector2 newPosition = new Vector2(_visualMap.GetXByColumnId(columnId), yPos);
+        _pointerAnimationComponent.SetPosition(newPosition);
     }
 
     private void ShowPointer(int playerId)
@@ -58,6 +68,7 @@ public class BingoVisualUserPointer : MonoBehaviour
         _cashedSpriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, _cashedSpriteRenderer.color.a);
 
         _pointer.SetActive(true);
+        ForceToChangePosition(_playerControlls.CurrentColumnId);
     }
 
     private void HidePointer(int playerId)

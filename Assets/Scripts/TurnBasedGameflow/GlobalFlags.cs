@@ -22,7 +22,8 @@ public class GlobalFlags
 
     public UnityEvent OnNextTurnAllowed { get; } = new(); // Разрешение на следующий шаг
     public UnityEvent OnFullCycleEnded { get; } = new(); // Прошли круг и вернулись к первому игроку
-    public UnityEvent OnGameStarted { get; } = new(); // Игра началась
+    public UnityEvent OnGameStartedQuery { get; } = new(); // Запрос на начало игры
+    public UnityEvent OnGameStartedAllowed { get; } = new(); // Игра началась
 
     // int - id ТЕКУЩЕГО раунда
     public UnityEvent<int> OnRoundStarted { get; } = new(); // Раунд начался
@@ -39,7 +40,8 @@ public class GlobalFlags
 
     // Порядок вызова (важно!):
 
-    // OnGameStarted                Игра началась
+    // OnGameStartedQuery                       Запрос на начало игры
+    // OnGameStarted                            Игра началась
 
     // Каждый раунд:
     //      OnRoundStarted                      Раунд начался (НЕ КРУГ)
@@ -97,9 +99,14 @@ public class GlobalFlags
         OnFullCycleEnded?.Invoke();
     }
 
-    public void TriggerOnGameStarted()
+    public void TriggerOnGameStartedQuery()
     {
-        OnGameStarted?.Invoke();
+        OnGameStartedQuery?.Invoke();
+    }
+
+    public void TriggerOnGameStartedAllowed()
+    {
+        OnGameStartedAllowed?.Invoke();
     }
 
     public void TriggerOnRoundStarted(int roundId)

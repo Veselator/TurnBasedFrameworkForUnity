@@ -53,6 +53,12 @@ public class BingoVisualMap : MonoBehaviour
         return _points[0][columnId].position.x;
     }
 
+    public float GetYByRowId(int rowId)
+    {
+        if (rowId < 0 || rowId >= _points.Length) return 0;
+        return _points[rowId][0].position.y;
+    }
+
     private void HandleElementAdded(int x, int y, int playerId)
     {
         GameObject piecePrefab = VisualPieceFactory.GetPiece(playerId);

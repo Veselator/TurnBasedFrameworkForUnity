@@ -85,6 +85,16 @@ public class BingoMap : TBS_BaseMap
         return AddPiece(new Piece(playerId, columnId, _map[columnId].NumOfElementsIn), columnId);
     }
 
+    public bool IsEntireMapFilled()
+    {
+        foreach(PieceColumn c in _map)
+        {
+            if (!c.IsFilled()) return false;
+        }
+
+        return true;
+    }
+
     public bool IsColumnFilled(int columnId)
     {
         if (columnId < 0 || columnId >= _map.Length) return false;
@@ -94,6 +104,12 @@ public class BingoMap : TBS_BaseMap
     public List<int> GetAvailableColumns()
     {
         return _map.Where(x => !x.IsFilled()).Select(x => x.ID).ToList();
+    }
+
+    public int GetLengthOfColumn(int id)
+    {
+        if (id < 0 || id >= _map.Length) return 0;
+        return _map[id].Length;
     }
 
     public Piece[][] GetMap()
@@ -156,6 +172,7 @@ public class PieceColumn
     private int _maxHeight;
     private const int _defaultHeight = 6;
     public int ID { get; private set; }
+    public int Length => _column.Count;
 
     public Piece this[int id] => GetElement(id);
 

@@ -46,4 +46,9 @@ public class UniversalAnimator : MonoBehaviour
         yield return TransformPosition(endPosition, speed);
         Destroy(gameObject);
     }
+
+    public void SetPosition(Vector2 position)
+    {
+        transform.position = position;
+    }
 }
