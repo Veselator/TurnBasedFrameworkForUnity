@@ -19,3 +19,4 @@ MonoBehaviour:
   - linkedRuleID: wait
   - linkedRuleID: wait_after_round
   - linkedRuleID: draft_rule
+  - linkedRuleID: wait_before_game_starts

@@ -67,7 +67,7 @@ Shader "Custom/AnimatedDiagonalLines"
                 rotatedUV.y = i.uv.x * sin(angleRad) + i.uv.y * cos(angleRad);
                 
                 // Добавляем движение со временем
-                float offset = _Time.y * _Speed;
+                float offset = _Time.x * _Speed * 0.3;
                 
                 // Создаём паттерн линий
                 float pattern = frac((rotatedUV.x + offset) / _LineSpacing);

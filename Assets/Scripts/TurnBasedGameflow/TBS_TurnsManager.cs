@@ -78,8 +78,8 @@ public class TBS_TurnsManager : MonoBehaviour
     {
         _globalFlags.TriggerOnRoundStarted(_currentTurn);
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
-        //OnTurnChanged?.Invoke(CurrentRound);
-        OnTurnChanged?.Invoke(CurrentRound);
+
+        OnTurnChanged?.Invoke(CurrentTurn);
     }
 
     // Дальше - обработчики событий
@@ -110,7 +110,7 @@ public class TBS_TurnsManager : MonoBehaviour
         }
 
         _currentTurn++;
-        OnTurnChanged?.Invoke(_currentTurn);
+        OnTurnChanged?.Invoke(CurrentTurn);
         _orderManager.NextPlayer();
 
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);
@@ -121,7 +121,7 @@ public class TBS_TurnsManager : MonoBehaviour
         // Начало хода
         IPlayer currentPlayer = _players.GetPlayerByID(playerId);
         currentPlayer.Act();
-        OnTurnChanged?.Invoke(CurrentRound);
+        OnTurnChanged?.Invoke(CurrentTurn);
         if (!currentPlayer.IsAI) _globalFlags.TriggerOnHumansTurnStarted(playerId);
     }
 
@@ -150,7 +150,7 @@ public class TBS_TurnsManager : MonoBehaviour
         _isNextRoundQueuedFlag = false;
 
         _currentTurn = 0;
-        OnTurnChanged?.Invoke(_currentTurn);
+        OnTurnChanged?.Invoke(CurrentTurn);
 
         _globalFlags.TriggerOnRoundStarted(_currentRound);
         _globalFlags.TriggerOnTurnStartedPrepared(_currentTurn, _orderManager.CurrentPlayerID);

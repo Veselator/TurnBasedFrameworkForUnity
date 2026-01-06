@@ -31,3 +31,6 @@ MonoBehaviour:
   - ruleID: draft_rule
     rule: {fileID: 11400000, guid: 09bdfbd00b40d7644a36abb730f90585, type: 2}
     priority: 0
+  - ruleID: wait_before_game_starts
+    rule: {fileID: 11400000, guid: 708d30b018e96c448a37005905d025be, type: 2}
+    priority: 0

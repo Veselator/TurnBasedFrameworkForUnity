@@ -15,7 +15,7 @@ public class StepNumberText : MonoBehaviour
 
     private void HandleTurnChanged(int turn)
     {
-        _linkedText.text = $"Turn {turn}";
+        _linkedText.text = $"Step {turn + 1}";
     }
 
     private void OnDestroy()

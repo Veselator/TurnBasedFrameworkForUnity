@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "RuleWaitSomeTimeAfterRound", menuName = "TurnBasedGameflow/RuleWaitSomeTimeAfterRound")]
+[CreateAssetMenu(fileName = "RuleWaitSomeTimeAfterRound", menuName = "TurnBasedGameflow/Rules/RuleWaitSomeTimeAfterRound")]
 public class WaitSomeTimeAfterRound : RuleAfterEndOfRound
 {
     public float timeToWait;
