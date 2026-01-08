@@ -146,8 +146,13 @@ MonoBehaviour:
   _border: 0.83
   _pieceAnimationSpeed: 19.8
   _offsetYToSpawnPieces: 1.5
-  _offsetYToDisappearPieces: -14
-  _endRoundAnimationDuration: 0.52
   _timeBeforeAnimationStart: 0.2
   _tableAppearDuration: 0.99
   _tableOvershootFactor: 1.61
+  _timeBetweenHighliting: 0.18
+  _timeToHighlight: 0.28
+  _colorHighlithed: {r: 1, g: 1, b: 1, a: 1}
+  _highlightedScaleFactor: 0.7
+  _waitBeforeReset: 0.5
+  _offsetYToDisappearPieces: -14
+  _endRoundAnimationDuration: 0.26

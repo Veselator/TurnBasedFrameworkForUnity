@@ -104,7 +104,7 @@ public class TBS_TurnsManager : MonoBehaviour
                 // НО
                 // Если мы дошли до этого этапа - значит, победителя нет
                 // Значит ничья
-                _globalFlags.TriggerOnRoundEnded(-1);
+                _globalFlags.TriggerOnRoundEnded(new RuleWinResult(GameWinCheckResult.Draft));
                 return;
             }
         }
@@ -126,10 +126,11 @@ public class TBS_TurnsManager : MonoBehaviour
     }
 
     // Нарушение SRP? Возможно
-    private void OnRoundEnded(int playerId)
+    private void OnRoundEnded(RuleWinResult result)
     {
         // playerId = -1 - ничья
-        if (playerId >= 0) _players.AddOverallScoreToPlayerWithId(playerId, 1);
+        // Как вараинт правила добавления очков?
+        if (result.Result == GameWinCheckResult.Win) _players.AddOverallScoreToPlayerWithId(result.WinnerPlayerID, 1);
 
         _currentRound++;
         if (_currentRound >= _maxRounds)

@@ -76,16 +76,10 @@ public class TBS_BeforeTurnEndHandler : MonoBehaviour
             foreach (RuleToWinOrDefeat rule in rulesOfWinOrLose)
             {
                 RuleWinResult result = rule.CheckIsAnybodyWon();
-                if (result.Result == GameWinCheckResult.Win)
+                if (result.Result == GameWinCheckResult.Win || result.Result == GameWinCheckResult.Draft)
                 {
                     // Есть победитель
-                    _globalFlags.TriggerOnRoundEnded(result.WinnerPlayerID);
-                    yield break;
-                }
-                else if (result.Result == GameWinCheckResult.Draft)
-                {
-                    // Ничья
-                    _globalFlags.TriggerOnRoundEnded(-1);
+                    _globalFlags.TriggerOnRoundEnded(result);
                     yield break;
                 }
             }

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf69bdcd9cacbed42a3825573182e88f, type: 3}
   m_Name: RuleWaitSomeTimeAfterRound
   m_EditorClassIdentifier: 
-  timeToWait: 1.53
+  timeToWait: 2.25

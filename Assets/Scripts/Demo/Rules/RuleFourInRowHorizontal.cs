@@ -61,6 +61,11 @@ public class RuleFourInRowHorizontal : RuleToWinOrDefeat
             }
         }
 
+        if (currentPiecesInRow >= 4)
+        {
+            return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+        }
+
         return new RuleWinResult();
     }
 }

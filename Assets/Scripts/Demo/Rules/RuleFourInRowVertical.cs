@@ -65,6 +65,11 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
             }
         }
 
+        if (currentPiecesInRow >= 4)
+        {
+            return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+        }
+
         // ≈сли дошли до сюда - значит, ничего не нашли
         return new RuleWinResult();
     }

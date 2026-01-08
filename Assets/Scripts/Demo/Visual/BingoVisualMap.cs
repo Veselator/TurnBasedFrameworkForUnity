@@ -1,30 +1,46 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BingoVisualMap : MonoBehaviour
 {
-    // Отвечает за визуализацию карты
+    // Отвечает за визуализацию поля бинго
+
     private Transform[][] _points;
     private BingoMap _map;
 
-    private List<GameObject> _pieces;
+    private Dictionary<(int, int), GameObject> _pieces;
+    private GlobalFlags _globalFlags;
 
     // Визуальная часть карты
+    [Header("Визуальная часть карты")]
     [SerializeField] private GameObject _visualTable;
     [SerializeField] private float _border = 1.3f;
 
     // Анимация появления фишек
+    [Header("Анимация появления фишек")]
     [SerializeField] private float _pieceAnimationSpeed = 1.0f;
     [SerializeField] private float _offsetYToSpawnPieces = -1f;
-    [SerializeField] private float _offsetYToDisappearPieces = -10f;
-    [SerializeField] private float _endRoundAnimationDuration = 1.3f;
 
     // Анимация появления поля
+    [Header("Анимация появления поля")]
     [SerializeField] private float _timeBeforeAnimationStart = 0.2f;
     [SerializeField] private float _tableAppearDuration = 1f;
     [SerializeField] private float _tableOvershootFactor = 1.2f;
+
+    // Анимация конца раунда
+    [Header("Анимация конца раунда")]
+    [SerializeField] private float _timeBetweenHighliting = 0.4f;
+    [SerializeField] private float _timeToHighlight = 0.35f;
+    [SerializeField] private Color _colorHighlithed = Color.white;
+    [SerializeField] private float _highlightedScaleFactor = 0.7f;
+
+    [Header("Анимация выпадения фишек")]
+    [SerializeField] private float _waitBeforeReset = 0.4f;
+    [SerializeField] private float _offsetYToDisappearPieces = -10f;
+    [SerializeField] private float _endRoundAnimationDuration = 1.3f;
 
     public float ToppestY => _points[_points.Length - 1][0].position.y;
 
@@ -39,12 +55,16 @@ public class BingoVisualMap : MonoBehaviour
     {
         _points = p;
         _map = map;
-        _pieces = new List<GameObject>();
+        _globalFlags = TBS_InitManager.Instance.GlobalFlags;
+
+        _pieces = new();
+
         ConfigurateVisualTable(map.Width, map.Height, distanceX, distanceY);
 
         // Передаём через конфиг в фабрику данные про визуал фишек
         _map.OnElementAdded += HandleElementAdded;
-        _map.OnMapReset += HandleMapReset;
+        //_map.OnMapReset += HandleMapReset;
+        _globalFlags.OnRoundEnded.AddListener(HandleRoundEnded);
     }
 
     private void OnDestroy()
@@ -52,7 +72,8 @@ public class BingoVisualMap : MonoBehaviour
         if (_points != null)
         {
             _map.OnElementAdded -= HandleElementAdded;
-            _map.OnMapReset -= HandleMapReset;
+            //_map.OnMapReset -= HandleMapReset;
+            _globalFlags.OnRoundEnded.RemoveListener(HandleRoundEnded);
         }
     }
 
@@ -113,7 +134,45 @@ public class BingoVisualMap : MonoBehaviour
         piece.transform.position = new Vector2(currentPoint.position.x, _points[_points.Length - 1][0].position.y + _offsetYToSpawnPieces);
 
         piece.AddComponent<UniversalAnimator>().Animate(currentPoint.position, _pieceAnimationSpeed);
-        _pieces.Add(piece);
+        _pieces[( y, x )] = piece;
+        //Debug.Log($"Added piece at y={y} x={x}");
+    }
+
+    private void HandleRoundEnded(RuleWinResult result)
+    {
+        if (result.Result != GameWinCheckResult.Win)
+        {
+            HandleMapReset();
+            return;
+        }
+
+        StartCoroutine(ResetMapAfterPiecesHighlighted((result as BingoWinResult).WinPieces));
+    }
+
+    private IEnumerator ResetMapAfterPiecesHighlighted(List<Piece> pieces)
+    {
+        WaitForSeconds w = new WaitForSeconds(_timeBetweenHighliting);
+
+        foreach (Piece piece in pieces)
+        {
+            (int, int) key = (piece.Y, piece.X);
+
+            if (!_pieces.ContainsKey(key))
+            {
+                Debug.Log($"Checking of y={piece.Y} x={piece.X} failed ((((");
+                continue;
+            }
+
+            GameObject pieceGO = _pieces[key];
+
+            UniversalAnimator animator = pieceGO.GetComponent<UniversalAnimator>();
+            animator.InterpolateColor(_colorHighlithed, _timeToHighlight);
+            animator.AnimateScale(pieceGO.transform.localScale * _highlightedScaleFactor, _timeToHighlight);
+
+            yield return w;
+        }
+
+        HandleMapReset();
     }
 
     private void HandleMapReset()
@@ -136,15 +195,19 @@ public class BingoVisualMap : MonoBehaviour
 
     private IEnumerator ClearMap(int[] order, float totalTimeToClean)
     {
+        yield return new WaitForSeconds(_waitBeforeReset);
+
         if (order.Length == 0)
         {
             _pieces.Clear();
             yield break;
         }
 
+        List<GameObject> piecesList = _pieces.Values.ToList();
+
         if (order.Length == 1)
         {
-            _pieces[order[0]].GetComponent<UniversalAnimator>()
+            piecesList[order[0]].GetComponent<UniversalAnimator>()
                 .AnimateWithOffset(new Vector2(0, _offsetYToDisappearPieces), _pieceAnimationSpeed, true);
             _pieces.Clear();
             yield break;
@@ -167,7 +230,7 @@ public class BingoVisualMap : MonoBehaviour
                 yield return null;
             }
 
-            _pieces[order[currentIndex]].GetComponent<UniversalAnimator>()
+            piecesList[order[currentIndex]].GetComponent<UniversalAnimator>()
                 .AnimateWithOffset(new Vector2(0, _offsetYToDisappearPieces), _pieceAnimationSpeed, true);
 
             currentIndex++;

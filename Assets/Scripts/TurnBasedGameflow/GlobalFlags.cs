@@ -27,8 +27,8 @@ public class GlobalFlags
 
     // int - id ТЕКУЩЕГО раунда
     public UnityEvent<int> OnRoundStarted { get; } = new(); // Раунд начался
-    // Но тут int - id победившего игрока или -1
-    public UnityEvent<int> OnRoundEnded { get; } = new(); // Раунд закончился
+
+    public UnityEvent<RuleWinResult> OnRoundEnded { get; } = new(); // Раунд закончился
 
     public UnityEvent<int> NextRoundQuery { get; } = new(); // Запрос на следующий раунд
     public UnityEvent NextRoundAllowed { get; } = new(); // Запрос на следующий раунд
@@ -114,9 +114,9 @@ public class GlobalFlags
         OnRoundStarted?.Invoke(roundId);
     }
 
-    public void TriggerOnRoundEnded(int playerWhoWonId)
+    public void TriggerOnRoundEnded(RuleWinResult result)
     {
-        OnRoundEnded?.Invoke(playerWhoWonId);
+        OnRoundEnded?.Invoke(result);
     }
 
     public void TriggerOnGameEnded(List<IPlayer> players)

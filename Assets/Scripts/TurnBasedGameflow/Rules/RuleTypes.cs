@@ -69,7 +69,7 @@ public abstract class RuleToWinOrDefeat : RuleSO
     public abstract RuleWinResult CheckIsAnybodyWon();
 }
 
-// Класс для возможности наследования
+// Класс-запись, который хранит информацию о результате проверки победы
 public class RuleWinResult
 {
     public GameWinCheckResult Result { get; private set; }

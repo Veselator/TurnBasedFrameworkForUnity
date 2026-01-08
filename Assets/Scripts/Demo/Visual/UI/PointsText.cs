@@ -14,10 +14,10 @@ public class PointsText : MonoBehaviour
         _playersManager = TBS_PlayersManager.Instance;
 
         _globalFlags.OnRoundEnded.AddListener(HandleRoundChanged);
-        HandleRoundChanged(0);
+        HandleRoundChanged(null);
     }
 
-    private void HandleRoundChanged(int round)
+    private void HandleRoundChanged(RuleWinResult _)
     {
         _linkedText.text = $"Points:\n{GetPointsAndPlayers()}";
     }

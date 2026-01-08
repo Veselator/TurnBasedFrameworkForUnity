@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class UniversalAnimator : MonoBehaviour
 {
+    // Класс, который содержит методы для любой анимации, которая может потребоваться
+    private SpriteRenderer _spriteRenderer;
+
+    private void Start()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if (_spriteRenderer == null)
+        {
+            Debug.LogError("ПРОГРАММИСТ, ЮНИТИ - ГДЕ SУКА SPRITERENDERER?");
+        }
+    }
+
     public void Animate(Vector2 endPosition, float speed)
     {
         StartCoroutine(TransformPosition(endPosition, speed));
@@ -90,27 +102,13 @@ public class UniversalAnimator : MonoBehaviour
 
     public void AnimateSpriteSize(Vector2 targetSize, float duration, Action onComplete = null)
     {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr == null)
-        {
-            Debug.LogError("UniversalAnimator: SpriteRenderer не найден на объекте!");
-            return;
-        }
-
-        StartCoroutine(AnimateSpriteSizeCoroutine(sr, targetSize, duration, onComplete));
+        StartCoroutine(AnimateSpriteSizeCoroutine(_spriteRenderer, targetSize, duration, onComplete));
     }
 
     public void AnimateSpriteSize(Vector2 startSize, Vector2 targetSize, float duration, Action onComplete = null)
     {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr == null)
-        {
-            Debug.LogError("UniversalAnimator: SpriteRenderer не найден на объекте!");
-            return;
-        }
-
-        sr.size = startSize;
-        StartCoroutine(AnimateSpriteSizeCoroutine(sr, targetSize, duration, onComplete));
+        _spriteRenderer.size = startSize;
+        StartCoroutine(AnimateSpriteSizeCoroutine(_spriteRenderer, targetSize, duration, onComplete));
     }
 
     private IEnumerator AnimateSpriteSizeCoroutine(SpriteRenderer sr, Vector2 targetSize, float duration, Action onComplete)
@@ -218,5 +216,29 @@ public class UniversalAnimator : MonoBehaviour
     public void SetPosition(Vector3 position)
     {
         transform.position = position;
+    }
+
+    public void InterpolateColor(Color endColor, float time)
+    {
+        StartCoroutine(ColorInterpolationAnimation(endColor, time));
+    }
+
+    private IEnumerator ColorInterpolationAnimation(Color toColor, float duration)
+    {
+        Color startColor = _spriteRenderer.color;
+        float timeElapsed = 0;
+
+        while (timeElapsed < duration)
+        {
+            float t = Mathf.Clamp01(timeElapsed / duration);
+
+            _spriteRenderer.color = Color.Lerp(startColor, toColor, t);
+
+            yield return null;
+
+            timeElapsed += Time.deltaTime;
+        }
+
+        _spriteRenderer.color = toColor;
     }
 }

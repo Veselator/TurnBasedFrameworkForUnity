@@ -85,6 +85,11 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
             if (Math.Abs(x - startX) > 10) break;
         }
 
+        if (currentInRow >= 4)
+        {
+            return pieces;
+        }
+
         return null;
     }
 
