@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RuleFourInRowHorizontal", menuName = "Demo Bingo/RuleFourInRowHorizontal")]
@@ -32,31 +32,35 @@ public class RuleFourInRowHorizontal : RuleToWinOrDefeat
         int startX = Math.Clamp(lastPiece.X - 3, 0, _map.Width - 1);
         int endX = Math.Clamp(lastPiece.X + 3, 0, _map.Width - 1);
 
-        int maxPiecesInRow = 0;
         int currentPiecesInRow = 0;
         int currentPlayerId = lastPiece.playerId;
 
+        List<Piece> pieces = new List<Piece>();
+
         for (int x = startX; x <= endX; x++)
         {
-            if (map[lastPiece.Y][x].playerId == currentPlayerId)
+            Piece p = map[lastPiece.Y][x];
+            if (p.playerId == currentPlayerId)
             {
                 // Если совпадают id владельцев фишек - значит, хорошо
                 // Можем продолжать цепь
                 //Debug.Log($"HORIZONTAL Piece at y={lastPiece.Y} x={x} matches currentPlayerId {currentPlayerId}; In row {currentPiecesInRow} pieces; max pieces {maxPiecesInRow}");
                 currentPiecesInRow++;
+                pieces.Add(p);
             }
             else
             {
                 // Если id не совпадают - плохо, цепь разорвана
-                if(currentPiecesInRow > maxPiecesInRow) maxPiecesInRow = currentPiecesInRow;
+                if (currentPiecesInRow >= 4)
+                {
+                    return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+                }
+
+                pieces.Clear();
                 currentPiecesInRow = 0;
             }
         }
 
-        if (currentPiecesInRow > maxPiecesInRow) maxPiecesInRow = currentPiecesInRow;
-        //Debug.Log($"Total max pieces horizontal {maxPiecesInRow}");
-
-        if (maxPiecesInRow >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
-        else return new RuleWinResult();
+        return new RuleWinResult();
     }
 }

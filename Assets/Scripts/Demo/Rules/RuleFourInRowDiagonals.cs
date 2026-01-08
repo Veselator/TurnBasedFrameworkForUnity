@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RuleFourInRowDiagonals", menuName = "Demo Bingo/RuleFourInRowDiagonals")]
@@ -22,19 +22,22 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         Piece lastPiece = _map.LastModifiedThing as Piece;
         int currentPlayerId = lastPiece.playerId;
 
-        int count1 = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, 1);
-        if (count1 >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
+        List<Piece> pieces = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, 1);
 
-        int count2 = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, -1);
-        if (count2 >= 4) return new RuleWinResult() { isWin = true, winnerPlayerID = currentPlayerId };
+        if (pieces != null) return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+
+        pieces = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, -1);
+        if (pieces != null) return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
 
         return new RuleWinResult();
     }
 
-    private int CheckDiagonal(int pieceX, int pieceY, int playerId, int dirX, int dirY)
+    private List<Piece> CheckDiagonal(int pieceX, int pieceY, int playerId, int dirX, int dirY)
     {
         int startX = pieceX;
         int startY = pieceY;
+
+        List<Piece> pieces = new List<Piece>();
 
         for (int i = 0; i < 3; i++)
         {
@@ -48,7 +51,6 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
             startY = prevY;
         }
 
-        int maxInRow = 0;
         int currentInRow = 0;
 
         int x = startX;
@@ -61,12 +63,18 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
 
             if (pieceOwner == playerId)
             {
+                pieces.Add(piece);
                 currentInRow++;
-                if (currentInRow > maxInRow)
-                    maxInRow = currentInRow;
             }
             else
             {
+                // Если уже нашли - нет смысла дальше искать
+                if (currentInRow >= 4)
+                {
+                    return pieces;
+                }
+
+                pieces.Clear();
                 currentInRow = 0;
             }
 
@@ -77,7 +85,7 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
             if (Math.Abs(x - startX) > 10) break;
         }
 
-        return maxInRow;
+        return null;
     }
 
     private bool IsInBounds(int x, int y)

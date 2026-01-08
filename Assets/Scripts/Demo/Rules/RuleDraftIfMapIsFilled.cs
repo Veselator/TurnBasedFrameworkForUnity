@@ -14,7 +14,7 @@ public class RuleDraftIfMapIsFilled : RuleToWinOrDefeat
     {
         if (_map.TotalNumOfElements < 4) return new RuleWinResult();
 
-        if(_map.IsEntireMapFilled()) return new RuleWinResult() { isDraft = true };
+        if(_map.IsEntireMapFilled()) return new RuleWinResult(GameWinCheckResult.Draft);
 
         return new RuleWinResult();
     }

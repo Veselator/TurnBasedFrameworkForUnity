@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Xml.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // Содержит определения всех категорий
@@ -67,11 +69,59 @@ public abstract class RuleToWinOrDefeat : RuleSO
     public abstract RuleWinResult CheckIsAnybodyWon();
 }
 
-public struct RuleWinResult
+// Класс для возможности наследования
+public class RuleWinResult
 {
-    public bool isDraft;
-    public bool isWin;
-    public int winnerPlayerID;
+    public GameWinCheckResult Result { get; private set; }
+    public int WinnerPlayerID { get; private set; }
+
+    public RuleWinResult() : this(GameWinCheckResult.None, -1) { }
+
+    public RuleWinResult(GameWinCheckResult res) : this (res, -1) { }
+
+    public RuleWinResult(GameWinCheckResult res, int playerId)
+    {
+        Result = res;
+        WinnerPlayerID = playerId;
+    }
+
+    // Перегрузка операторов
+    public static bool operator ==(RuleWinResult res1, RuleWinResult res2)
+    {
+        return res1.Result == res2.Result;
+    }
+
+    public static bool operator !=(RuleWinResult res1, RuleWinResult res2)
+    {
+        return res1.Result != res2.Result;
+    }
+
+    public static bool operator ==(RuleWinResult res1, GameWinCheckResult res2)
+    {
+        return res1.Result == res2;
+    }
+
+    public static bool operator !=(RuleWinResult res1, GameWinCheckResult res2)
+    {
+        return res1.Result != res2;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return this == (RuleWinResult)obj;
+    }
+
+    public override int GetHashCode()
+    {
+        return Result.GetHashCode() + WinnerPlayerID.GetHashCode();
+    }
+}
+
+public enum GameWinCheckResult
+{
+    None,
+    Draft,
+    Win
 }
 
 public abstract class RuleAfterCycleEnd : RuleSO
