@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Xml.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // Содержит определения всех категорий
@@ -63,10 +61,17 @@ public abstract class RuleToWinOrDefeat : RuleSO
 {
     public override RuleType ruleType => RuleType.ToWinOrDefeat;
     // Проверка, победил ли кто-то
-    // Возвращает ID победителя, если таковой есть
+    // Возвращает RuleWinResult, который содержит ID победителя, если таковой есть
     // -1 - ничья
 
-    public abstract RuleWinResult CheckIsAnybodyWon();
+    //public abstract RuleWinResult CheckIsPlayerWon(int playerId);
+
+    // Расчёт С контекстом
+    public abstract RuleWinResult CheckIsPlayerWon(int playerId, TBS_Context context = null);
+
+    // Проблема - как сделать так, что-бы можно было предсказывать результат победы без изменения поля?
+    // Создавать новый экземпляр всего поля для каждой проверки каждого правила= утечка памяти
+    // Значит, нужно сделать контекст
 }
 
 // Класс-запись, который хранит информацию о результате проверки победы

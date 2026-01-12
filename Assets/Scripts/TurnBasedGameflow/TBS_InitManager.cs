@@ -107,6 +107,17 @@ public class TBS_InitManager : MonoBehaviour
             return;
         }
 
+        // Инициализируем предсказателя
+        if (TBS_Predictor.Instance != null)
+        {
+            TBS_Predictor.Instance.Init();
+        }
+        else
+        {
+            Debug.LogError("WTF where is my TBS_Predictor?");
+            return;
+        }
+
         // Инициализируем менеджер ходов
         if (TBS_TurnsManager.Instance != null)
         {

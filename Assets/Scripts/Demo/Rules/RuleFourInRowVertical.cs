@@ -13,12 +13,14 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
         _map = BingoMap.Instance as BingoMap;
     }
 
-    public override RuleWinResult CheckIsAnybodyWon()
+    public override RuleWinResult CheckIsPlayerWon(int playerId, TBS_Context context = null)
     {
         if (_map.TotalNumOfElements < 4) return new RuleWinResult();
 
+        BingoContext bContext = context as BingoContext;
+
         // Берём последнюю изменённую фишку
-        Piece lastPiece = _map.LastModifiedThing as Piece;
+        Piece targetPiece = bContext == null || bContext.TargetPiece == null ? _map.LastModifiedThing as Piece : bContext.TargetPiece;
         Piece[][] map = _map.Map as Piece[][];
 
         // Мы должны проверить такую область
@@ -32,18 +34,18 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
         // где P - стартовая фишка
         // * - область проверки
 
-        int startY = Math.Clamp(lastPiece.Y - 3, 0, _map.Height - 1);
-        int endY = Math.Clamp(lastPiece.Y + 3, 0, _map.Height - 1);
+        int startY = Math.Clamp(targetPiece.Y - 3, 0, _map.Height - 1);
+        int endY = Math.Clamp(targetPiece.Y + 3, 0, _map.Height - 1);
 
         int currentPiecesInRow = 0;
-        int currentPlayerId = lastPiece.playerId;
 
         List<Piece> pieces = new List<Piece>();
 
         for (int y = startY; y <= endY; y++)
         {
-            Piece p = map[y][lastPiece.X];
-            if (p.playerId == currentPlayerId)
+            Piece p = map[y][targetPiece.X];
+            bool isMatch = bContext == null ? p.playerId == playerId : p.playerId == playerId || bContext.IsPieceMatchesPlayerId(targetPiece.X, y, playerId);
+            if (isMatch)
             {
                 // Если совпадают id владельцев фишек - значит, хорошо
                 // Можем продолжать цепь
@@ -57,7 +59,7 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
                 // Проверяем, победа ли это
                 if (currentPiecesInRow >= 4)
                 {
-                    return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+                    return new BingoWinResult(GameWinCheckResult.Win, playerId, pieces);
                 }
 
                 pieces.Clear();
@@ -67,7 +69,7 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
 
         if (currentPiecesInRow >= 4)
         {
-            return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+            return new BingoWinResult(GameWinCheckResult.Win, playerId, pieces);
         }
 
         // Если дошли до сюда - значит, ничего не нашли

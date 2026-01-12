@@ -13,26 +13,26 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         _map = BingoMap.Instance as BingoMap;
     }
 
-    public override RuleWinResult CheckIsAnybodyWon()
+    public override RuleWinResult CheckIsPlayerWon(int playerId, TBS_Context context = null)
     {
         if (_map.TotalNumOfElements < 4) return new RuleWinResult();
 
         _matrix = _map.Map as Piece[][];
 
-        Piece lastPiece = _map.LastModifiedThing as Piece;
-        int currentPlayerId = lastPiece.playerId;
+        BingoContext bContext = context as BingoContext;
+        Piece targetPiece = bContext == null || bContext.TargetPiece == null ? _map.LastModifiedThing as Piece : bContext.TargetPiece;
 
-        List<Piece> pieces = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, 1);
+        List<Piece> pieces = CheckDiagonal(targetPiece.X, targetPiece.Y, playerId, 1, 1, bContext);
 
-        if (pieces != null) return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+        if (pieces != null) return new BingoWinResult(GameWinCheckResult.Win, playerId, pieces);
 
-        pieces = CheckDiagonal(lastPiece.X, lastPiece.Y, currentPlayerId, 1, -1);
-        if (pieces != null) return new BingoWinResult(GameWinCheckResult.Win, currentPlayerId, pieces);
+        pieces = CheckDiagonal(targetPiece.X, targetPiece.Y, playerId, 1, -1, bContext);
+        if (pieces != null) return new BingoWinResult(GameWinCheckResult.Win, playerId, pieces);
 
         return new RuleWinResult();
     }
 
-    private List<Piece> CheckDiagonal(int pieceX, int pieceY, int playerId, int dirX, int dirY)
+    private List<Piece> CheckDiagonal(int pieceX, int pieceY, int playerId, int dirX, int dirY, BingoContext context)
     {
         int startX = pieceX;
         int startY = pieceY;
@@ -59,7 +59,7 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         while (IsInBounds(x, y))
         {
             Piece piece = GetPiece(x, y);
-            int pieceOwner = piece?.playerId ?? -1;
+            int pieceOwner = GetPieceOwner(x, y, context);
 
             if (pieceOwner == playerId)
             {
@@ -91,6 +91,18 @@ public class RuleFourInRowDiagonals : RuleToWinOrDefeat
         }
 
         return null;
+    }
+
+    private int GetPieceOwner(int x, int y, BingoContext context)
+    {
+        if (context != null)
+        {
+            Piece contextPiece = context.GetPiece(x, y);
+            if (contextPiece != null) return contextPiece.playerId;
+        }
+
+        Piece mapPiece = GetPiece(x, y);
+        return mapPiece?.playerId ?? -1;
     }
 
     private bool IsInBounds(int x, int y)

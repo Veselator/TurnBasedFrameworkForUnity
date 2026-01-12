@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public abstract class BasePlayer : IPlayer
 {
     // Базовый класс игрока
@@ -10,9 +8,9 @@ public abstract class BasePlayer : IPlayer
     protected int id;
     public int ID => id;
 
-    protected int points;
-    public int Points { get => points; set => points = value; }
-    public int OverallScore { get; set; }
+    protected float points;
+    public float Points { get => points; set => points = value; }
+    public float OverallScore { get; set; }
     public virtual bool IsAI { get; }
 
 

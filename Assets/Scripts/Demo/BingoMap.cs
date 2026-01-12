@@ -95,6 +95,24 @@ public class BingoMap : TBS_BaseMap
         return true;
     }
 
+    public bool IsEntireMapFilled(BingoContext context)
+    {
+        foreach (PieceColumn c in _map)
+        {
+            if (!c.IsFilled())
+            {
+                // Если в оригинальной карте НЕ заполнена - смотрим, есть ли в контексте
+                // Фишка сверху
+                // В контексте нет фишки = вся карта не заполнена
+
+                int x = c.ID;
+                if (!context.DoesPieceExist(x, c.Length - 1)) return false;
+            }
+        }
+
+        return true;
+    }
+
     public bool IsColumnFilled(int columnId)
     {
         if (columnId < 0 || columnId >= _map.Length) return false;
@@ -195,7 +213,7 @@ public class PieceColumn
 
     public Piece GetElement(int id)
     {
-        if (id < 0 || id >= _column.Count) return new Piece();
+        if (id < 0 || id >= _column.Count) return null;
         return _columnListCashed[id];
     }
 
