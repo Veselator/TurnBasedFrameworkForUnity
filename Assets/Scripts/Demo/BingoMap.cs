@@ -15,6 +15,7 @@ public class BingoMap : TBS_BaseMap
     public int Width => _width;
     public int TotalNumOfElements { get; private set; } = 0;
 
+    // Карта для внешней зоны видимости
     private Piece[][] _outMapCashed;
     private bool _isMapFlagDirty; // Флаг на пересчёт карты
     public override IEnumerable Map => GetMap();
@@ -128,6 +129,16 @@ public class BingoMap : TBS_BaseMap
     {
         if (id < 0 || id >= _map.Length) return 0;
         return _map[id].Length;
+    }
+
+    public int GetToppestHeight()
+    {
+        int max = 0;
+        foreach (PieceColumn c in _map)
+        {
+            if (c.Length > max) max = c.Length;
+        }
+        return max;
     }
 
     public Piece[][] GetMap()
@@ -260,19 +271,28 @@ public class Piece
 
     public static bool operator ==(Piece first, Piece another)
     {
+        if (ReferenceEquals(first, null) && ReferenceEquals(another, null))
+            return true;
+
+        if (ReferenceEquals(first, null) || ReferenceEquals(another, null))
+            return false;
+
         return first.Equals(another);
     }
 
     public static bool operator !=(Piece first, Piece another)
     {
-        return !first.Equals(another);
+        return !(first == another);
     }
 
     public override bool Equals(object obj)
     {
-        if (obj == null) return false;
+        if (ReferenceEquals(obj, null)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+
         Piece another = obj as Piece;
-        if (another == null) return false;
+        if (ReferenceEquals(another, null)) return false;
+
         return playerId == another.playerId;
     }
 

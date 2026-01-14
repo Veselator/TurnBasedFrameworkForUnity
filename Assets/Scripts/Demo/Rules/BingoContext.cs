@@ -26,14 +26,37 @@ public class BingoContext : TBS_Context
         TargetPiece = targetPiece;
     }
 
-    public void AddPiece(int x, int y, Piece p)
+    public void SetTargetPiece(Piece p)
+    {
+        TargetPiece = p;
+    }
+
+    public void ClearTargetPiece()
+    {
+        TargetPiece = null;
+    }
+
+    public void SetPiece(int x, int y, Piece p)
     {
         _cashedContext[(x, y)] = p;
     }
 
-    public void AddPiece(Piece p)
+    public void SetPiece(Piece p)
     {
-        AddPiece(p.X, p.Y, p);
+        SetPiece(p.X, p.Y, p);
+    }
+
+    public void ClearPiece(int x, int y)
+    {
+        if(_cashedContext.ContainsKey((x, y)))
+        {
+            _cashedContext.Remove((x, y));
+        }
+    }
+
+    public void Clear()
+    {
+        _cashedContext.Clear();
     }
 
     public Piece GetPiece(int x, int y)

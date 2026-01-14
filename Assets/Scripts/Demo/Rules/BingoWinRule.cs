@@ -11,7 +11,7 @@ public abstract class BingoWinRule : RuleToWinOrDefeat
     public override RuleWinResult CheckIsPlayerWon(int playerId, TBS_Context context = null)
     {
         BingoContext bContext = context as BingoContext;
-        Piece targetPiece;// = bContext == null || bContext.TargetPiece == null ? _map.LastModifiedThing as Piece : bContext.TargetPiece;
+        Piece targetPiece; // = bContext == null || bContext.TargetPiece == null ? _map.LastModifiedThing as Piece : bContext.TargetPiece;
         if (bContext == null || bContext.TargetPiece == null)
         {
             targetPiece = _map.LastModifiedThing as Piece;

@@ -18,7 +18,7 @@ MonoBehaviour:
     aiDifficulty: 0
   - playerName: bot
     isAI: 1
-    aiDifficulty: 0
+    aiDifficulty: 2
   currentRulesConfig: {fileID: 11400000, guid: 25ff45be96d84144699f68154ae432b9, type: 2}
   rulesConfig: {fileID: 11400000, guid: 9e26ffd5646f59c4fbe90b0aae5cbf43, type: 2}
   orderRule: {fileID: 11400000, guid: 137d146ac36552344bb8f60fcba696f2, type: 2}

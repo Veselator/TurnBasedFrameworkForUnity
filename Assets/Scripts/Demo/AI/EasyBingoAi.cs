@@ -9,8 +9,7 @@ public class EasyBingoAi : BingoAi
         List<int> availableColumns = _map.GetAvailableColumns();
         int selectedColumnId = availableColumns[Random.Range(0, availableColumns.Count)];
 
-        _map.AddPiece(ID, selectedColumnId);
-        _globalFlags.TriggerOnTurnEnded(_turnsManager.CurrentTurn, ID);
+        Put(selectedColumnId);
     }
 
     public EasyBingoAi() : base() { }
