@@ -3,25 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "RuleFourInRowVertical", menuName = "Demo Bingo/RuleFourInRowVertical")]
-public class RuleFourInRowVertical : RuleToWinOrDefeat
+public class RuleFourInRowVertical : BingoWinRule
 {
-    // Условие победы в бинго если 4 в ряд вертикально
-    private BingoMap _map;
-
-    public override void Init()
-    {
-        _map = BingoMap.Instance as BingoMap;
-    }
-
-    public override RuleWinResult CheckIsPlayerWon(int playerId, TBS_Context context = null)
+    protected override RuleWinResult Check(int playerId, Piece targetPiece, BingoContext context = null)
     {
         if (_map.TotalNumOfElements < 4) return new RuleWinResult();
 
-        BingoContext bContext = context as BingoContext;
-
-        // Берём последнюю изменённую фишку
-        Piece targetPiece = bContext == null || bContext.TargetPiece == null ? _map.LastModifiedThing as Piece : bContext.TargetPiece;
-        Piece[][] map = _map.Map as Piece[][];
+        _matrix = _map.Map as Piece[][];
 
         // Мы должны проверить такую область
         // *
@@ -43,9 +31,8 @@ public class RuleFourInRowVertical : RuleToWinOrDefeat
 
         for (int y = startY; y <= endY; y++)
         {
-            Piece p = map[y][targetPiece.X];
-            bool isMatch = bContext == null ? p.playerId == playerId : p.playerId == playerId || bContext.IsPieceMatchesPlayerId(targetPiece.X, y, playerId);
-            if (isMatch)
+            Piece p = _matrix[y][targetPiece.X];
+            if (playerId == GetPieceOwner(targetPiece.X, y, context))
             {
                 // Если совпадают id владельцев фишек - значит, хорошо
                 // Можем продолжать цепь
