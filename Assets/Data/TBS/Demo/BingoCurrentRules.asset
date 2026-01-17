@@ -21,3 +21,4 @@ MonoBehaviour:
   - linkedRuleID: draft_rule
   - linkedRuleID: wait_before_game_starts
   - linkedRuleID: reverse_order
+  - linkedRuleID: wait_after_game

@@ -34,6 +34,7 @@ public class GlobalFlags
     public UnityEvent NextRoundAllowed { get; } = new(); // Запрос на следующий раунд
 
     // int - id победившего игрока; -1 - ничья
+    public UnityEvent<List<IPlayer>> OnGameEndedQuery { get; } = new(); // Запрос на окончание игры
     public UnityEvent<List<IPlayer>> OnGameEnded { get; } = new(); // Игра кончилась
 
     // ------------------------------------------------------------------------
@@ -57,6 +58,7 @@ public class GlobalFlags
     //      NextRoundQuery
     //      NextRoundAllowed
 
+    // OnGameEndedQuery
     // OnGameEnded
 
     // ------------------------------------------------------------------------
@@ -117,6 +119,11 @@ public class GlobalFlags
     public void TriggerOnRoundEnded(RuleWinResult result)
     {
         OnRoundEnded?.Invoke(result);
+    }
+
+    public void TriggerOnGameEndedQuery(List<IPlayer> players)
+    {
+        OnGameEndedQuery?.Invoke(players);
     }
 
     public void TriggerOnGameEnded(List<IPlayer> players)

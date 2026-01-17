@@ -38,6 +38,7 @@ public class TBS_RulesManager : MonoBehaviour
     public List<RuleBeforeGameStart> RulesBeforeGameStartCashed { get; private set; } = new();
     public List<RuleAfterCycleEnd> RulesAfterCycleEndedCashed { get; private set; } = new();
     public List<RuleAfterEndOfRound> RulesAfterEndOfRoundCashed { get; private set; } = new();
+    public List<RuleBeforeEndOfGame> RulesBeforeEndOfGameCashed { get; private set; } = new();
 
     private event Action OnRulesChanged;
     public event Action OnCashedRulesRecalculated;
@@ -123,6 +124,9 @@ public class TBS_RulesManager : MonoBehaviour
                     break;
                 case RuleType.AfterEndOfRound:
                     RulesAfterEndOfRoundCashed.Add(rule as RuleAfterEndOfRound);
+                    break;
+                case RuleType.AfterEndOfGame:
+                    RulesBeforeEndOfGameCashed.Add(rule as RuleBeforeEndOfGame);
                     break;
             }
         }

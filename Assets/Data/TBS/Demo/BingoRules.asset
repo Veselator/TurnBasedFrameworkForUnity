@@ -37,3 +37,6 @@ MonoBehaviour:
   - ruleID: reverse_order
     rule: {fileID: 11400000, guid: 1be681a71ccae72459e5192a4c674d78, type: 2}
     priority: 0
+  - ruleID: wait_after_game
+    rule: {fileID: 11400000, guid: ec5c409415aa1964b8b8b3352b673925, type: 2}
+    priority: 0

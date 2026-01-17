@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "TBS_BotFirstRule", menuName = "TurnBasedGameflow/TBS_BotFirstRule")]
+[CreateAssetMenu(fileName = "TBS_BotFirstRule", menuName = "TurnBasedGameflow/Rules/TBS_BotFirstRule")]
 public class TBS_BotFirstRule : TBS_BaseOrderRule
 {
     public override List<int> GetTurnOrder(IReadOnlyCollection<IPlayer> players)

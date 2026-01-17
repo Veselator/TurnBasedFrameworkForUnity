@@ -107,6 +107,16 @@ public class TBS_InitManager : MonoBehaviour
             return;
         }
 
+        if (TBS_BeforeGameEndHandler.Instance != null)
+        {
+            TBS_BeforeGameEndHandler.Instance.Init(_globalFlags);
+        }
+        else
+        {
+            Debug.LogError("Please, create TBS_BeforeGameEndHandler");
+            return;
+        }
+
         // Инициализируем предсказателя
         if (TBS_Predictor.Instance != null)
         {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 // —одержит определени€ всех категорий
 // –азные типы правил = разные типы взаимодействий
@@ -142,6 +143,12 @@ public abstract class RuleAfterEndOfRound : RuleSO
     public abstract IEnumerator ExecuteRule(int roundId, RuleWinResult result);
 }
 
+public abstract class RuleBeforeEndOfGame : RuleSO
+{
+    public override RuleType ruleType => RuleType.AfterEndOfGame;
+    public abstract IEnumerator ExecuteRule(List<IPlayer> players);
+}
+
 public enum RuleType
 {
     BeforeTurn,
@@ -151,5 +158,6 @@ public enum RuleType
     ToAllowAction,
     BeforeStartGame,
     AfterEndOfCycle,
-    AfterEndOfRound
+    AfterEndOfRound,
+    AfterEndOfGame
 }
