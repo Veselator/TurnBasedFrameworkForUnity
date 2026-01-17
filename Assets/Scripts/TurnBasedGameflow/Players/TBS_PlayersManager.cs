@@ -83,7 +83,7 @@ public class TBS_PlayersManager : MonoBehaviour
     // 0 - ןמבוהטעוכü
     // 1 - געמנמו לוסעמ
     // ט עה
-    public List<IPlayer> GetPlayersOut()
+    public List<IPlayer> GetPlayersOutOverall()
     {
         return _players.OrderByDescending(p => p.OverallScore).ToList();
     }

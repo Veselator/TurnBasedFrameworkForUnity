@@ -44,13 +44,13 @@ public class TBS_RoundEndHandler : MonoBehaviour
         }
     }
 
-    private void HandleRoundQuery(int roundResult)
+    private void HandleRoundQuery(int roundResult, RuleWinResult result)
     {
         // Перезагрузка данных, проверка правил AfterRound
-        StartCoroutine(HandleRoundQuery());
+        StartCoroutine(HandleRoundQuery(result));
     }
 
-    private IEnumerator HandleRoundQuery()
+    private IEnumerator HandleRoundQuery(RuleWinResult result)
     {
         _playersManager.ResetPlayersPoints();
         _map.Reload();
@@ -62,7 +62,7 @@ public class TBS_RoundEndHandler : MonoBehaviour
         {
             foreach (var rule in rules)
             {
-                yield return rule.ExecuteRule(_turnsManager.CurrentTurn, _orderManager.CurrentPlayerID);
+                yield return rule.ExecuteRule(_turnsManager.CurrentTurn, result);
             }
         }
 

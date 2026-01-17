@@ -51,4 +51,10 @@ public class TBS_OrderManager : MonoBehaviour
     {
         CurrentPlayerPointer = 0;
     }
+
+    // Переворачивает порядок хода
+    public void ReverseOrder()
+    {
+        Order.Reverse();
+    }
 }

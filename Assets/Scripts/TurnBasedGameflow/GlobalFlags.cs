@@ -30,7 +30,7 @@ public class GlobalFlags
 
     public UnityEvent<RuleWinResult> OnRoundEnded { get; } = new(); // Раунд закончился
 
-    public UnityEvent<int> NextRoundQuery { get; } = new(); // Запрос на следующий раунд
+    public UnityEvent<int, RuleWinResult> NextRoundQuery { get; } = new(); // Запрос на следующий раунд
     public UnityEvent NextRoundAllowed { get; } = new(); // Запрос на следующий раунд
 
     // int - id победившего игрока; -1 - ничья
@@ -134,9 +134,9 @@ public class GlobalFlags
         OnHumansTurnEnded?.Invoke(playerId);
     }
 
-    public void TriggerNextRoundQuery(int roundId)
+    public void TriggerNextRoundQuery(int roundId, RuleWinResult resultOfRound)
     {
-        NextRoundQuery?.Invoke(roundId);
+        NextRoundQuery?.Invoke(roundId, resultOfRound);
     }
 
     public void TriggerNextRoundAllowed()

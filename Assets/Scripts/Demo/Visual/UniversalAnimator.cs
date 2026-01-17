@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class UniversalAnimator : MonoBehaviour
 {
     // Класс, который содержит методы для любой анимации, которая может потребоваться
     private SpriteRenderer _spriteRenderer;
+    private TMP_Text _text;
 
     private void Start()
     {
@@ -14,6 +16,8 @@ public class UniversalAnimator : MonoBehaviour
         {
             Debug.LogError("ПРОГРАММИСТ, ЮНИТИ - ГДЕ SУКА SPRITERENDERER?");
         }
+
+        _text = GetComponent<TMP_Text>();
     }
 
     public void Animate(Vector2 endPosition, float speed)

@@ -5,7 +5,7 @@ using UnityEngine;
 public class WaitSomeTimeAfterRound : RuleAfterEndOfRound
 {
     public float timeToWait;
-    public override IEnumerator ExecuteRule(int turnId, int playerId)
+    public override IEnumerator ExecuteRule(int turnId, RuleWinResult _)
     {
         yield return new WaitForSeconds(timeToWait);
     }

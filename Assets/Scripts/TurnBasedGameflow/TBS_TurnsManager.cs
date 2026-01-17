@@ -136,13 +136,13 @@ public class TBS_TurnsManager : MonoBehaviour
         if (_currentRound >= _maxRounds)
         {
             // Всё, игра закончилась
-            _globalFlags.TriggerOnGameEnded(_players.GetPlayersOut());
+            _globalFlags.TriggerOnGameEnded(_players.GetPlayersOutOverall());
             return;
         }
 
         // Запрос для начала нового раунда
         _isNextRoundQueuedFlag = true;
-        _globalFlags.TriggerNextRoundQuery(_currentRound);
+        _globalFlags.TriggerNextRoundQuery(_currentRound, result);
     }
 
     private void OnNextRoundAllowed()

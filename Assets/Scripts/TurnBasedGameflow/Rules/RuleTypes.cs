@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Содержит определения всех категорий
@@ -37,7 +38,7 @@ public abstract class RuleToCalculatePoints : RuleSO
 
     public override RuleType ruleType => RuleType.ToCalculatePoints;
     public abstract IEnumerable CalculatePoints(int turnId, int playerId);
-    public abstract IEnumerable CalculatePoints(int turnId, int playerId, IEnumerable newMapState);
+    public abstract IEnumerable CalculatePoints(int turnId, int playerId, TBS_Context context);
 }
 
 public abstract class RuleBeforeTurn : RuleSO
@@ -77,6 +78,7 @@ public abstract class RuleToWinOrDefeat : RuleSO
 // Класс-запись, который хранит информацию о результате проверки победы
 public class RuleWinResult
 {
+    // Должен сохранять порядок результатов проверки?! Первое место, второе и тд?
     public GameWinCheckResult Result { get; private set; }
     public int WinnerPlayerID { get; private set; }
 
@@ -137,6 +139,7 @@ public abstract class RuleAfterCycleEnd : RuleSO
 public abstract class RuleAfterEndOfRound : RuleSO
 {
     public override RuleType ruleType => RuleType.AfterEndOfRound;
+    public abstract IEnumerator ExecuteRule(int roundId, RuleWinResult result);
 }
 
 public enum RuleType

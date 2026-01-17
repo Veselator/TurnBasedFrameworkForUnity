@@ -2,13 +2,14 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 
+[DefaultExecutionOrder(100)]
 public class PointsText : MonoBehaviour
 {
     [SerializeField] private TMP_Text _linkedText;
     private GlobalFlags _globalFlags;
     private TBS_PlayersManager _playersManager;
 
-    public void Init()
+    public void Start()
     {
         _globalFlags = TBS_InitManager.Instance.GlobalFlags;
         _playersManager = TBS_PlayersManager.Instance;

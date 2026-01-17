@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+[DefaultExecutionOrder(100)]
 public class RoundText : MonoBehaviour
 {
     [SerializeField] private TMP_Text _linkedText;
@@ -8,7 +9,7 @@ public class RoundText : MonoBehaviour
 
     private int _maxRounds;
 
-    public void Init()
+    public void Start()
     {
         _globalFlags = TBS_InitManager.Instance.GlobalFlags;
         _maxRounds = TBS_TurnsManager.Instance.MaxRounds;

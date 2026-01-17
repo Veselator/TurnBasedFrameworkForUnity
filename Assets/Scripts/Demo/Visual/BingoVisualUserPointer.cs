@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(100)]
 public class BingoVisualUserPointer : MonoBehaviour
 {
     // Визуализация указателя в бинго
@@ -16,7 +17,7 @@ public class BingoVisualUserPointer : MonoBehaviour
     private UniversalAnimator _pointerAnimationComponent;
     private SpriteRenderer _cashedSpriteRenderer;
 
-    public void Init()
+    public void Start()
     {
         _playerControlls = PlayerControlls.Instance;
         _globalFlags = TBS_InitManager.Instance.GlobalFlags;
