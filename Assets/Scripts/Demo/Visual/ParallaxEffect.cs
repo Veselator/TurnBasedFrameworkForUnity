@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ParallaxEffect : MonoBehaviour
 {
@@ -9,19 +10,31 @@ public class ParallaxEffect : MonoBehaviour
     [SerializeField] private bool parallaxY = false;
 
     private Vector3 lastCameraPosition;
-    private Vector3 startPosition;
 
     private void Start()
     {
         cameraTransform = Camera.main.transform;
 
         lastCameraPosition = cameraTransform.position;
-        startPosition = transform.position;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        cameraTransform = Camera.main.transform;
     }
 
     private void LateUpdate()
     {
-        // Вычисляем движение камеры
         Vector3 deltaMovement = cameraTransform.position - lastCameraPosition;
 
         // Применяем параллакс
