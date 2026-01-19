@@ -1,0 +1,19 @@
+using UnityEngine;
+
+public class MainMenuInitManager : MonoBehaviour
+{
+    [SerializeField] private BingoInitConfig _bingoInitConfig;
+    [SerializeField] private PlayerSettingLoaderManager _playerSettingLoaderManager;
+    [SerializeField] private PieceSelectorManager _pieceSelectorManager;
+    [SerializeField] private PiecesPrefabsFactory _pieceFactory;
+    [SerializeField] private PlayerSettingsHandler[] _handlers;
+
+    public void Start()
+    {
+        // Инициализируем менеджер выбора фишек
+        _pieceSelectorManager.Init(_pieceFactory);
+
+        // Загружаем настройки игроков из конфига
+        _playerSettingLoaderManager.Load(_bingoInitConfig, _pieceFactory, _pieceSelectorManager);
+    }
+}
